@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS VIP LOGIN</title>
+    <style>
+        /* Estilo Matrix */
+        body { background-color: black; margin: 0; overflow: hidden; font-family: 'Courier New', Courier, monospace; }
+        canvas { display: block; position: absolute; top: 0; left: 0; }
+
+        /* Caixa de Login */
+        .login-box {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0, 15, 0, 0.9); 
+            padding: 40px; 
+            border: 2px solid #00FF00;
+            text-align: center; 
+            color: #00FF00; 
+            box-shadow: 0 0 25px #00FF00; 
+            z-index: 10;
+            border-radius: 10px;
+            width: 280px;
+        }
+
+        h2 { margin-bottom: 20px; letter-spacing: 3px; font-size: 1.5rem; }
+
+        input { 
+            background: black; 
+            border: 1px solid #00FF00; 
+            color: #00FF00; 
+            padding: 12px; 
+            margin-top: 10px; 
+            width: 90%; 
+            text-align: center;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        button {
+            background: #00FF00; 
+            color: black; 
+            border: none; 
+            padding: 12px 25px;
+            margin-top: 25px; 
+            cursor: pointer; 
+            font-weight: bold;
+            width: 100%;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        button:hover { background: #008800; color: white; }
+
+        .footer { margin-top: 15px; font-size: 0.7rem; opacity: 0.7; }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+
+    <div class="login-box">
+        <h2>NEXUS XITER</h2>
+        <p style="font-size: 0.8rem;">SISTEMA DE AUTENTICAÇÃO</p>
+        <input type="text" id="keyInput" placeholder="COLE SUA KEY AQUI">
+        <br>
+        <button onclick="checkKey()">ATIVAR MOD MENU</button>
+        <div class="footer">BY NEXUS VIP - 2026</div>
+    </div>
+
+    <script>
+        // Configuração do Efeito Matrix
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px arial';
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 35);
+
+        // Lógica de Verificação
+        function checkKey() {
+            const key = document.getElementById('keyInput').value.trim();
+            
+            // Defina a sua KEY mestre aqui
+            if (key === "NEXUS-FREE-2026") {
+                // Redireciona para o link que o Sketchware vai ler
+                window.location.href = "https://sucesso.login";
+            } else {
+                alert("ACESSO NEGADO: KEY INVÁLIDA");
+            }
+        }
+    </script>
+</body>
+</html>
