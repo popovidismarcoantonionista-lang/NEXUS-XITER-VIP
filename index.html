@@ -1,300 +1,49 @@
 <!DOCTYPE html>
-<html lang="pt-pt">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS XITER VIP</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        :root {
-            --neon-green: #00ff00;
-            --dark-bg: #000000;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: var(--dark-bg);
-            font-family: 'Fira Code', monospace;
-        }
-
-        /* Container de visualização dinâmica para garantir centralização absoluta */
-        .viewport-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100dvh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-
-        #matrix-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 1;
-            opacity: 0.6;
-        }
-
-        /* Painel com efeito Neon vibrante */
-        .nexus-panel {
-            background: rgba(0, 0, 0, 0.95);
-            border: 2px solid var(--neon-green);
-            box-shadow: 0 0 30px var(--neon-green), inset 0 0 15px var(--neon-green);
-            padding: 40px 25px;
-            border-radius: 30px;
-            width: 88%;
-            max-width: 350px;
-            text-align: center;
-            position: relative;
-            z-index: 20;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .hidden { display: none; }
-
-        .nexus-title {
-            color: var(--neon-green);
-            font-size: 1.7rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-shadow: 0 0 15px var(--neon-green);
-            margin-bottom: 5px;
-        }
-
-        .nexus-subtitle {
-            color: var(--neon-green);
-            font-size: 0.65rem;
-            letter-spacing: 2px;
-            opacity: 1;
-            text-transform: uppercase;
-            margin-bottom: 30px;
-            font-weight: 700;
-        }
-
-        .input-box {
-            background: #000;
-            border: 1px solid var(--neon-green);
-            color: #fff;
-            width: 100%;
-            padding: 16px;
-            text-align: center;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            outline: none;
-            border-radius: 10px;
-            transition: box-shadow 0.3s;
-        }
-
-        .input-box:focus {
-            box-shadow: 0 0 10px var(--neon-green);
-        }
-
-        /* Botão principal sólido */
-        .btn-logar {
-            background: #00ff00;
-            color: #000;
-            width: 100%;
-            padding: 16px;
-            font-weight: 900;
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 0 20px #00ff00;
-            border-radius: 10px;
-            transition: filter 0.2s;
-        }
-
-        .btn-logar:active {
-            filter: brightness(1.2);
-            transform: scale(0.98);
-        }
-
-        /* Menu de Funções com Texto em Branco para Máxima Visibilidade */
-        .mod-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 18px;
-            background: rgba(0, 255, 0, 0.12);
-            margin-bottom: 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 255, 0, 0.4);
-        }
-
-        .mod-name { 
-            font-size: 0.8rem; 
-            font-weight: 700; 
-            color: #ffffff; /* Texto branco puro para não bugar no fundo preto */
-            letter-spacing: 0.5px;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 24px;
-        }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #1a1a1a; transition: .3s;
-            border-radius: 24px; border: 1px solid var(--neon-green);
-        }
-        .slider:before {
-            position: absolute; content: "";
-            height: 18px; width: 18px; left: 2px; bottom: 2px;
-            background-color: var(--neon-green); transition: .3s; border-radius: 50%;
-        }
-        input:checked + .slider { background-color: var(--neon-green); }
-        input:checked + .slider:before { transform: translateX(20px); background-color: #000; }
-
-        #msg { 
-            margin-top: 15px; 
-            font-size: 0.75rem; 
-            font-weight: bold; 
-            min-height: 20px;
-            text-transform: uppercase;
-        }
-
-        .error-text { color: #ff3333; text-shadow: 0 0 8px #ff0000; }
-        .success-text { color: #00ff00; text-shadow: 0 0 8px #00ff00; }
-
-        .btn-exit {
-            background: transparent;
-            border: 1px solid var(--neon-green);
-            color: var(--neon-green);
-            margin-top: 20px;
-            font-size: 0.7rem;
-            padding: 10px;
-            width: 100%;
-            border-radius: 8px;
-            font-weight: bold;
-            opacity: 0.7;
-        }
+        body { background: transparent; color: #00ff00; font-family: monospace; text-align: center; }
+        .panel { background: rgba(0,0,0,0.9); border: 2px solid #0f0; border-radius: 20px; padding: 20px; width: 300px; margin: auto; box-shadow: 0 0 20px #0f0; }
+        .item { display: flex; justify-content: space-between; margin: 15px 0; padding: 10px; border: 1px solid #0f03; }
+        button { background: #0f0; color: #000; border: none; padding: 10px; font-weight: bold; width: 100%; cursor: pointer; }
+        .switch { position: relative; width: 40px; height: 20px; }
+        .switch input { opacity: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #111; border: 1px solid #0f0; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 2px; background: #0f0; transition: .4s; border-radius: 50%; }
+        input:checked + .slider:before { transform: translateX(18px); background: #fff; }
     </style>
 </head>
 <body>
-
-    <!-- Fundo Matrix Animado -->
-    <canvas id="matrix-canvas"></canvas>
-
-    <div class="viewport-wrapper">
+    <div class="panel">
+        <h3>NEXUS VIP ARM64</h3>
         
-        <!-- Secção de Login -->
-        <div id="loginSection" class="nexus-panel">
-            <h1 class="nexus-title">NEXUS VIP</h1>
-            <p class="nexus-subtitle">SISTEMA DE AUTENTICAÇÃO</p>
-            
-            <input type="password" id="keyInput" placeholder="COLE SUA KEY AQUI" autocomplete="off" class="input-box">
-            
-            <button onclick="validaKey()" class="btn-logar">LOGAR NO MOD</button>
-            
-            <p id="msg"></p>
+        <div class="item">
+            <span>ANTENA ESP</span>
+            <label class="switch">
+                <input type="checkbox" onchange="Android.applyPatch('Antena', '0x68a1144', '1F2003D5')">
+                <span class="slider"></span>
+            </label>
         </div>
 
-        <!-- Secção do Menu (Aparece após Login) -->
-        <div id="menuSection" class="nexus-panel hidden">
-            <h1 class="nexus-title" style="font-size: 1.4rem;">MENU ATIVO</h1>
-            <p class="nexus-subtitle" style="margin-bottom: 25px;">FUNÇÕES DISPONÍVEIS</p>
-
-            <div class="mod-item">
-                <span class="mod-name">AUTO HEADSHOT</span>
-                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-            </div>
-            <div class="mod-item">
-                <span class="mod-name">AIMLOCK (VIP)</span>
-                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-            </div>
-            <div class="mod-item">
-                <span class="mod-name">ESP LINE (ANTENA)</span>
-                <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
-            </div>
-            <div class="mod-item">
-                <span class="mod-name">WALLHACK V2</span>
-                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-            </div>
-            
-            <button onclick="location.reload()" class="btn-exit">SAIR DO SISTEMA</button>
+        <div class="mod-item">
+            <span>SPEED HACK</span>
+            <label class="switch">
+                <input type="checkbox" onchange="Android.applyPatch('Speed', '0x68a10dc', '200080D2')">
+                <span class="slider"></span>
+            </label>
         </div>
 
+        <div class="mod-item">
+            <span>AIM ASSIST</span>
+            <label class="switch">
+                <input type="checkbox" onchange="Android.applyPatch('Aim', '0x7393994', '200080D2')">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <button onclick="Android.abrirJogo()">ABRIR JOGO</button>
     </div>
-
-    <script>
-        const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height, columns, drops;
-
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            columns = Math.floor(width / 20);
-            drops = new Array(columns).fill(1);
-        }
-
-        function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            ctx.fillRect(0, 0, width, height);
-            ctx.fillStyle = '#0F0';
-            ctx.font = '15px monospace';
-            for (let i = 0; i < drops.length; i++) {
-                const text = String.fromCharCode(0x30A0 + Math.random() * 96);
-                ctx.fillText(text, i * 20, drops[i] * 20);
-                if (drops[i] * 20 > height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
-        }
-
-        window.addEventListener('resize', resize);
-        resize();
-        setInterval(draw, 50);
-
-        function validaKey() {
-            const input = document.getElementById('keyInput').value;
-            const msg = document.getElementById('msg');
-            const login = document.getElementById('loginSection');
-            const menu = document.getElementById('menuSection');
-
-            if (input === "MATRIX-2024") {
-                msg.className = "success-text";
-                msg.innerText = "ACESSO CONCEDIDO!";
-                setTimeout(() => {
-                    login.classList.add('hidden');
-                    menu.classList.remove('hidden');
-                    // Efeito de entrada suave
-                    menu.style.transform = "scale(1.05)";
-                    setTimeout(() => menu.style.transform = "scale(1)", 200);
-                }, 800);
-            } else {
-                msg.className = "error-text";
-                msg.innerText = "ERRO: KEY INVÁLIDA";
-                shake(login);
-            }
-        }
-
-        function shake(el) {
-            el.style.transform = 'translateX(-10px)';
-            setTimeout(() => el.style.transform = 'translateX(10px)', 80);
-            setTimeout(() => el.style.transform = 'translateX(-10px)', 160);
-            setTimeout(() => el.style.transform = 'translateX(0)', 240);
-        }
-    </script>
 </body>
 </html>
