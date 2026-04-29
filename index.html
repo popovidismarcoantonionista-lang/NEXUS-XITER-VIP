@@ -7,71 +7,58 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root { --neon: #00ff00; --bg: #000; }
-        body { margin: 0; background: var(--bg); color: var(--neon); font-family: monospace; overflow: hidden; height: 100vh; display: flex; align-items: center; justify-content: center; }
+        body { margin: 0; background: var(--bg); color: var(--neon); font-family: monospace; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.5; }
-        .nexus-panel { background: rgba(0, 0, 0, 0.9); border: 2px solid var(--neon); box-shadow: 0 0 20px var(--neon); padding: 2rem; border-radius: 20px; width: 320px; text-align: center; z-index: 100; }
-        .mod-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(0, 255, 0, 0.05); margin-bottom: 10px; border-radius: 8px; border: 1px solid rgba(0, 255, 0, 0.2); }
+        .nexus-panel { background: rgba(0, 0, 0, 0.95); border: 2px solid var(--neon); box-shadow: 0 0 25px var(--neon); padding: 2.5rem 2rem; border-radius: 25px; width: 90%; max-width: 380px; text-align: center; position: relative; z-index: 100; }
+        .nexus-title { font-size: 1.8rem; font-weight: 700; letter-spacing: 5px; text-shadow: 0 0 15px var(--neon); margin-bottom: 0.5rem; }
+        .nexus-input { background: #000; border: 1px solid var(--neon); color: #fff; width: 100%; padding: 15px; text-align: center; margin-bottom: 1.5rem; outline: none; }
+        .nexus-btn { background: var(--neon); color: #000; width: 100%; padding: 15px; font-weight: 900; text-transform: uppercase; cursor: pointer; box-shadow: 0 0 15px var(--neon); }
         .hidden { display: none; }
-        .switch { position: relative; width: 34px; height: 18px; }
+        .mod-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(0, 255, 0, 0.05); margin-bottom: 8px; border-radius: 8px; border: 1px solid rgba(0, 255, 0, 0.2); }
+        .switch { position: relative; width: 40px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #111; transition: .4s; border-radius: 20px; border: 1px solid var(--neon); }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 2px; bottom: 2px; background-color: var(--neon); transition: .4s; border-radius: 50%; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: var(--neon); transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--neon); }
-        input:checked + .slider:before { transform: translateX(16px); background-color: #000; }
+        input:checked + .slider:before { transform: translateX(20px); background-color: #000; }
     </style>
 </head>
 <body>
     <canvas id="matrix-canvas"></canvas>
 
     <div id="login" class="nexus-panel">
-        <h1 style="font-size: 1.5rem; letter-spacing: 3px; margin-bottom: 20px;">NEXUS LOGIN</h1>
-        <input type="password" id="key" placeholder="KEY" style="background:#000; border:1px solid #0f0; color:#fff; width:100%; padding:10px; text-align:center; margin-bottom:15px;">
-        <button onclick="auth()" style="background:#0f0; color:#000; width:100%; padding:10px; font-weight:bold; cursor:pointer;">LOGAR</button>
+        <h1 class="nexus-title">NEXUS XITER VIP</h1>
+        <p style="font-size: 0.75rem; letter-spacing: 3px; margin-bottom: 2rem;">SISTEMA DE AUTENTICAÇÃO</p>
+        <input type="password" id="key" placeholder="COLE SUA KEY" class="nexus-input">
+        <button onclick="auth()" class="nexus-btn">LOGAR NO MOD</button>
+        <p id="msg" style="margin-top: 10px; font-size: 10px;"></p>
     </div>
 
-    <div id="painel" class="nexus-panel hidden">
-        <h2 style="margin-bottom: 15px; font-size: 1.2rem;">MENU ATIVO</h2>
-        
+    <div id="menu" class="nexus-panel hidden">
+        <h1 class="nexus-title" style="font-size: 1.4rem;">PAINEL ATIVO</h1>
         <div class="mod-item">
-            <span style="font-size: 12px;">AUTO HEADSHOT</span>
-            <label class="switch"><input type="checkbox" onchange="cmd('headshot', this.checked)"><span class="slider"></span></label>
+            <span class="text-xs font-bold">SHIZUKU SERVICE</span>
+            <label class="switch"><input type="checkbox" onchange="cmd('shizuku', this.checked)"><span class="slider"></span></label>
         </div>
-
         <div class="mod-item">
-            <span style="font-size: 12px;">AIM SILENT</span>
-            <label class="switch"><input type="checkbox" onchange="cmd('aimsilent', this.checked)"><span class="slider"></span></label>
+            <span class="text-xs font-bold">AIM SILENT</span>
+            <label class="switch"><input type="checkbox" onchange="cmd('aim', this.checked)"><span class="slider"></span></label>
         </div>
-
-        <div class="mod-item" style="flex-direction: column; gap: 5px;">
-            <span style="font-size: 10px;">TAXA HS: <span id="val">50</span>%</span>
-            <input type="range" min="1" max="100" value="50" style="width: 100%; accent-color: #0f0;" oninput="updateHs(this.value)">
-        </div>
-
-        <button onclick="location.reload()" style="margin-top:15px; color:red; background:none; border:none; font-size:10px; cursor:pointer;">SAIR</button>
+        <button onclick="location.reload()" class="nexus-btn" style="margin-top:20px; background:transparent; border:1px solid red; color:red;">SAIR</button>
     </div>
 
     <script>
         function auth() {
             if(document.getElementById('key').value === "MATRIX-2024") {
                 document.getElementById('login').classList.add('hidden');
-                document.getElementById('painel').classList.remove('hidden');
-            }
+                document.getElementById('menu').classList.remove('hidden');
+            } else { document.getElementById('msg').innerText = "KEY INVÁLIDA!"; }
         }
-
-        function cmd(hack, status) {
-            if(window.Android) { window.Android.fazerAcao(hack, status); }
-        }
-
-        function updateHs(v) {
-            document.getElementById('val').innerText = v;
-            if(window.Android) { window.Android.setHsRate(parseInt(v)); }
-        }
-
-        // Matrix Effect
+        function cmd(h, s) { if(window.Android) window.Android.fazerAcao(h, s); }
+        
         const c = document.getElementById('matrix-canvas');
         const ctx = c.getContext('2d');
-        let w = c.width = window.innerWidth;
-        let h = c.height = window.innerHeight;
+        let w = c.width = window.innerWidth, h = c.height = window.innerHeight;
         let d = new Array(Math.floor(w/18)).fill(1);
         function draw() {
             ctx.fillStyle = 'rgba(0,0,0,0.1)'; ctx.fillRect(0,0,w,h);
