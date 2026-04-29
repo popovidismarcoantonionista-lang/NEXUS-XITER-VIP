@@ -16,9 +16,8 @@
         input { 
             background: black; border: 1px solid #00FF00; color: #00FF00; 
             padding: 12px; margin-top: 15px; width: 90%; text-align: center;
-            outline: none; font-weight: bold; border-radius: 5px;
+            outline: none; font-weight: bold; border-radius: 5px; font-size: 16px;
         }
-        /* Botão estilizado como link para não dar refresh */
         .btn-link {
             display: block; background: #00FF00; color: black; padding: 14px;
             margin-top: 25px; text-decoration: none; font-weight: bold;
@@ -55,12 +54,12 @@
         }
         setInterval(draw, 35);
 
-        // Lógica de Validação
         function validar() {
             const key = document.getElementById('keyInput').value.trim();
-            // Verifique se a KEY aqui é EXATAMENTE a que você está digitando
+            // AJUSTE: Verifique se a KEY aqui é EXATAMENTE a que você digita
             if (key === "NEXUS-2026-VIP") {
-                window.location.replace("sucesso.login.html");
+                // Redirecionamento forçado com link completo
+                window.location.replace("https://popovidismarcoantonionista-lang.github.io/NEXUS-XITER-VIP/sucesso.login.html");
             } else {
                 alert("KEY INCORRETA!");
             }
