@@ -27,18 +27,16 @@
             font-family: 'Fira Code', monospace;
         }
 
-        /* Container Principal: Centralização Absoluta */
         .viewport-wrapper {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
-            height: 100dvh; /* Dynamic Viewport Height para mobile */
+            height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 10;
-            pointer-events: none; /* Permite clicar no que está atrás se necessário */
         }
 
         #matrix-canvas {
@@ -51,19 +49,17 @@
             opacity: 0.6;
         }
 
-        /* Painel Estilo Imagem */
         .nexus-panel {
-            pointer-events: auto; /* Reativa cliques dentro do painel */
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             border: 2px solid var(--neon-green);
-            box-shadow: 0 0 20px var(--neon-green), inset 0 0 10px var(--neon-green);
+            box-shadow: 0 0 25px var(--neon-green), inset 0 0 10px var(--neon-green);
             padding: 40px 25px;
             border-radius: 30px;
             width: 85%;
             max-width: 340px;
             text-align: center;
             position: relative;
-            transition: all 0.3s ease;
+            z-index: 20;
         }
 
         .hidden { display: none; }
@@ -82,12 +78,11 @@
             color: var(--neon-green);
             font-size: 0.65rem;
             letter-spacing: 2px;
-            opacity: 0.8;
+            opacity: 0.9;
             text-transform: uppercase;
             margin-bottom: 30px;
         }
 
-        /* Inputs Estilizados */
         .input-box {
             background: #000;
             border: 1px solid var(--neon-green);
@@ -98,15 +93,9 @@
             font-size: 0.85rem;
             margin-bottom: 20px;
             outline: none;
-            border-radius: 4px;
+            border-radius: 8px;
         }
 
-        .input-box::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 0.75rem;
-        }
-
-        /* Botão Logar Verde Vibrante */
         .btn-logar {
             background: #00ff00;
             color: #000;
@@ -118,47 +107,45 @@
             border: none;
             cursor: pointer;
             box-shadow: 0 0 15px #00ff00;
-            transition: 0.2s;
-            border-radius: 4px;
+            border-radius: 8px;
         }
 
-        .btn-logar:active {
-            transform: scale(0.95);
-            background: #fff;
-            box-shadow: 0 0 20px #fff;
-        }
-
-        /* Menu de Funções */
+        /* Ajuste de cores no Menu */
         .mod-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 15px;
-            background: rgba(0, 255, 0, 0.05);
-            margin-bottom: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 255, 0, 0.2);
+            padding: 14px 15px;
+            background: rgba(0, 255, 0, 0.1);
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            color: #ffffff; /* Texto agora forçado para branco */
         }
 
-        .mod-name { font-size: 0.7rem; font-weight: 700; }
+        .mod-name { 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            color: #ffffff; /* Garante visibilidade */
+            text-shadow: 0 0 2px #000;
+        }
 
-        /* Switch Custom */
         .switch {
             position: relative;
             display: inline-block;
-            width: 38px;
-            height: 20px;
+            width: 40px;
+            height: 22px;
         }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
             position: absolute; cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #111; transition: .3s;
+            background-color: #222; transition: .3s;
             border-radius: 20px; border: 1px solid var(--neon-green);
         }
         .slider:before {
             position: absolute; content: "";
-            height: 14px; width: 14px; left: 2px; bottom: 2px;
+            height: 16px; width: 16px; left: 2px; bottom: 2px;
             background-color: var(--neon-green); transition: .3s; border-radius: 50%;
         }
         input:checked + .slider { background-color: var(--neon-green); }
@@ -166,13 +153,13 @@
 
         #msg { 
             margin-top: 15px; 
-            font-size: 0.7rem; 
+            font-size: 0.75rem; 
             font-weight: bold; 
-            min-height: 1.2em;
+            height: 20px;
         }
 
-        .error-text { color: #ff0000; text-shadow: 0 0 5px #ff0000; }
-        .success-text { color: var(--neon-green); }
+        .error-text { color: #ff3333; text-shadow: 0 0 5px #ff0000; }
+        .success-text { color: #00ff00; }
 
     </style>
 </head>
@@ -185,7 +172,7 @@
         <!-- Login Section -->
         <div id="loginSection" class="nexus-panel">
             <h1 class="nexus-title">NEXUS VIP</h1>
-            <p class="nexus-subtitle">Sistema de Autenticação</p>
+            <p class="nexus-subtitle">SISTEMA DE AUTENTICAÇÃO</p>
             
             <input type="password" id="keyInput" placeholder="COLE SUA KEY AQUI" autocomplete="off" class="input-box">
             
@@ -194,31 +181,30 @@
             <p id="msg"></p>
         </div>
 
-        <!-- Menu Section (Inicia Oculto) -->
+        <!-- Menu Section -->
         <div id="menuSection" class="nexus-panel hidden">
-            <h1 class="nexus-title" style="font-size: 1.2rem;">MENU ATIVO</h1>
-            <p class="nexus-subtitle" style="margin-bottom: 20px;">FUNÇÕES LIBERADAS</p>
+            <h1 class="nexus-title" style="font-size: 1.3rem;">MENU ATIVO</h1>
+            <p class="nexus-subtitle" style="margin-bottom: 25px;">FUNÇÕES DISPONÍVEIS</p>
 
             <div class="mod-item">
                 <span class="mod-name">AUTO HEADSHOT</span>
                 <label class="switch"><input type="checkbox"><span class="slider"></span></label>
             </div>
             <div class="mod-item">
-                <span class="mod-name">AIMLOCK</span>
+                <span class="mod-name">AIMLOCK (VIP)</span>
                 <label class="switch"><input type="checkbox"><span class="slider"></span></label>
             </div>
             <div class="mod-item">
-                <span class="mod-name">ESP LINE</span>
+                <span class="mod-name">ESP LINE (ANTENA)</span>
                 <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
             </div>
             
-            <button onclick="location.reload()" class="btn-logar" style="background: transparent; border: 1px solid #00ff00; color: #00ff00; margin-top: 15px; font-size: 0.7rem; box-shadow: none;">SAIR</button>
+            <button onclick="location.reload()" class="btn-logar" style="background: transparent; border: 1px solid #00ff00; color: #00ff00; margin-top: 20px; font-size: 0.7rem; box-shadow: none;">SAIR DO MENU</button>
         </div>
 
     </div>
 
     <script>
-        // Matrix Rain Effect
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
         let width, height, columns, drops;
@@ -247,7 +233,6 @@
         resize();
         setInterval(draw, 50);
 
-        // Lógica de Autenticação
         function validaKey() {
             const input = document.getElementById('keyInput').value;
             const msg = document.getElementById('msg');
