@@ -11,128 +11,122 @@
         :root {
             --neon-green: #00ff00;
             --dark-bg: #000000;
-            --panel-bg: rgba(0, 0, 0, 0.95);
-            --item-bg: rgba(0, 255, 0, 0.07);
         }
 
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            margin: 0;
-            background: var(--dark-bg);
-            color: var(--neon-green);
-            font-family: 'Fira Code', monospace;
-            /* Usa dvh para evitar bugs em navegadores móveis */
-            min-height: 100dvh;
+        body, html {
             width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--dark-bg);
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Container Principal: Centralização Absoluta */
+        .viewport-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100dvh; /* Dynamic Viewport Height para mobile */
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow-x: hidden;
-            position: relative;
+            z-index: 10;
+            pointer-events: none; /* Permite clicar no que está atrás se necessário */
         }
 
         #matrix-canvas {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1; /* Fica no fundo */
-            opacity: 0.4;
-            pointer-events: none;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            opacity: 0.6;
         }
 
-        /* Content Wrapper */
-        .main-container {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            z-index: 10; /* Fica à frente do canvas */
-            position: relative;
-        }
-
-        /* Estilo do Painel */
+        /* Painel Estilo Imagem */
         .nexus-panel {
-            background: var(--panel-bg);
+            pointer-events: auto; /* Reativa cliques dentro do painel */
+            background: rgba(0, 0, 0, 0.9);
             border: 2px solid var(--neon-green);
-            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3), inset 0 0 15px rgba(0, 255, 0, 0.1);
-            padding: 35px 25px;
-            border-radius: 25px;
+            box-shadow: 0 0 20px var(--neon-green), inset 0 0 10px var(--neon-green);
+            padding: 40px 25px;
+            border-radius: 30px;
+            width: 85%;
+            max-width: 340px;
             text-align: center;
-            backdrop-filter: blur(10px);
-            transition: all 0.4s ease;
-            width: 100%;
+            position: relative;
+            transition: all 0.3s ease;
         }
 
-        .hidden-panel {
-            display: none;
-            opacity: 0;
-            transform: translateY(20px);
-        }
+        .hidden { display: none; }
 
-        /* Tipografia */
         .nexus-title {
+            color: var(--neon-green);
             font-size: 1.6rem;
             font-weight: 700;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            text-shadow: 0 0 10px var(--neon-green);
-            margin-bottom: 5px;
+            text-shadow: 0 0 15px var(--neon-green);
+            margin-bottom: 8px;
         }
 
         .nexus-subtitle {
+            color: var(--neon-green);
             font-size: 0.65rem;
             letter-spacing: 2px;
-            color: var(--neon-green);
             opacity: 0.8;
             text-transform: uppercase;
             margin-bottom: 30px;
         }
 
-        /* Inputs */
-        .nexus-input {
-            background: rgba(0, 0, 0, 1);
-            border: 1px solid rgba(0, 255, 0, 0.4);
+        /* Inputs Estilizados */
+        .input-box {
+            background: #000;
+            border: 1px solid var(--neon-green);
             color: #fff;
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             text-align: center;
-            font-size: 0.9rem;
-            border-radius: 12px;
-            outline: none;
-            transition: 0.3s;
+            font-size: 0.85rem;
             margin-bottom: 20px;
+            outline: none;
+            border-radius: 4px;
         }
 
-        .nexus-input:focus {
-            border-color: var(--neon-green);
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        .input-box::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
         }
 
-        /* Botões */
-        .nexus-btn {
-            background: var(--neon-green);
+        /* Botão Logar Verde Vibrante */
+        .btn-logar {
+            background: #00ff00;
             color: #000;
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             font-weight: 900;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
             border: none;
-            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0, 255, 0, 0.3);
+            box-shadow: 0 0 15px #00ff00;
+            transition: 0.2s;
+            border-radius: 4px;
         }
 
-        .nexus-btn:active {
-            transform: scale(0.98);
-            opacity: 0.9;
+        .btn-logar:active {
+            transform: scale(0.95);
+            background: #fff;
+            box-shadow: 0 0 20px #fff;
         }
 
         /* Menu de Funções */
@@ -140,169 +134,146 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 16px;
-            background: var(--item-bg);
+            padding: 12px 15px;
+            background: rgba(0, 255, 0, 0.05);
             margin-bottom: 10px;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 255, 0, 0.15);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 0, 0.2);
         }
 
-        .mod-name {
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
+        .mod-name { font-size: 0.7rem; font-weight: 700; }
 
-        /* Switch */
+        /* Switch Custom */
         .switch {
             position: relative;
             display: inline-block;
-            width: 42px;
-            height: 22px;
+            width: 38px;
+            height: 20px;
         }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
             position: absolute; cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
             background-color: #111; transition: .3s;
-            border-radius: 34px; border: 1px solid rgba(0, 255, 0, 0.4);
+            border-radius: 20px; border: 1px solid var(--neon-green);
         }
         .slider:before {
             position: absolute; content: "";
-            height: 16px; width: 16px; left: 2px; bottom: 2px;
+            height: 14px; width: 14px; left: 2px; bottom: 2px;
             background-color: var(--neon-green); transition: .3s; border-radius: 50%;
         }
         input:checked + .slider { background-color: var(--neon-green); }
-        input:checked + .slider:before { transform: translateX(20px); background-color: #000; }
+        input:checked + .slider:before { transform: translateX(18px); background-color: #000; }
 
         #msg { 
             margin-top: 15px; 
             font-size: 0.7rem; 
-            font-weight: 700;
-            min-height: 18px;
+            font-weight: bold; 
+            min-height: 1.2em;
         }
 
-        .footer-link {
-            display: block;
-            margin-top: 25px;
-            font-size: 0.65rem;
-            color: var(--neon-green);
-            opacity: 0.5;
-            text-decoration: none;
-            background: none;
-            border: none;
-            width: 100%;
-            cursor: pointer;
-        }
+        .error-text { color: #ff0000; text-shadow: 0 0 5px #ff0000; }
+        .success-text { color: var(--neon-green); }
+
     </style>
 </head>
 <body>
 
     <canvas id="matrix-canvas"></canvas>
 
-    <div class="main-container">
-        <!-- Secção de Login -->
+    <div class="viewport-wrapper">
+        
+        <!-- Login Section -->
         <div id="loginSection" class="nexus-panel">
             <h1 class="nexus-title">NEXUS VIP</h1>
-            <p class="nexus-subtitle">Verificação de Acesso</p>
+            <p class="nexus-subtitle">Sistema de Autenticação</p>
             
-            <input type="password" id="keyInput" placeholder="COLE A SUA KEY AQUI" autocomplete="off" class="nexus-input">
+            <input type="password" id="keyInput" placeholder="COLE SUA KEY AQUI" autocomplete="off" class="input-box">
             
-            <button onclick="validaKey()" class="nexus-btn">ENTRAR NO SISTEMA</button>
+            <button onclick="validaKey()" class="btn-logar">LOGAR NO MOD</button>
             
             <p id="msg"></p>
         </div>
 
-        <!-- Secção do Menu -->
-        <div id="menuSection" class="nexus-panel hidden-panel">
-            <h1 class="nexus-title" style="font-size: 1.3rem;">MENU ATIVO</h1>
-            <p class="nexus-subtitle">Elite Scripts Liberados</p>
+        <!-- Menu Section (Inicia Oculto) -->
+        <div id="menuSection" class="nexus-panel hidden">
+            <h1 class="nexus-title" style="font-size: 1.2rem;">MENU ATIVO</h1>
+            <p class="nexus-subtitle" style="margin-bottom: 20px;">FUNÇÕES LIBERADAS</p>
 
-            <div class="space-y-1">
-                <div class="mod-item">
-                    <span class="mod-name">AUTO HEADSHOT</span>
-                    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-                </div>
-                <div class="mod-item">
-                    <span class="mod-name">AIMLOCK (FIXAR)</span>
-                    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-                </div>
-                <div class="mod-item">
-                    <span class="mod-name">ESP LINE (ANTENA)</span>
-                    <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
-                </div>
-                <div class="mod-item">
-                    <span class="mod-name">ATRAVESSAR TUDO</span>
-                    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-                </div>
+            <div class="mod-item">
+                <span class="mod-name">AUTO HEADSHOT</span>
+                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
             </div>
-
-            <button onclick="location.reload()" class="footer-link">TERMINAR SESSÃO</button>
+            <div class="mod-item">
+                <span class="mod-name">AIMLOCK</span>
+                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+            </div>
+            <div class="mod-item">
+                <span class="mod-name">ESP LINE</span>
+                <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
+            
+            <button onclick="location.reload()" class="btn-logar" style="background: transparent; border: 1px solid #00ff00; color: #00ff00; margin-top: 15px; font-size: 0.7rem; box-shadow: none;">SAIR</button>
         </div>
+
     </div>
 
     <script>
-        // Matrix Background corrigido
+        // Matrix Rain Effect
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
-        let width, height, drops;
+        let width, height, columns, drops;
 
-        function init() {
+        function resize() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
-            const columns = Math.floor(width / 20);
+            columns = Math.floor(width / 20);
             drops = new Array(columns).fill(1);
         }
 
         function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
             ctx.fillRect(0, 0, width, height);
-            ctx.fillStyle = '#00ff00';
-            ctx.font = '14px monospace';
-            for(let i = 0; i < drops.length; i++) {
-                const char = String.fromCharCode(0x30A0 + Math.random() * 96);
-                ctx.fillText(char, i * 20, drops[i] * 20);
+            ctx.fillStyle = '#0F0';
+            ctx.font = '15px monospace';
+            for (let i = 0; i < drops.length; i++) {
+                const text = String.fromCharCode(0x30A0 + Math.random() * 96);
+                ctx.fillText(text, i * 20, drops[i] * 20);
                 if (drops[i] * 20 > height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             }
         }
-        
-        window.addEventListener('resize', init);
-        init();
+
+        window.addEventListener('resize', resize);
+        resize();
         setInterval(draw, 50);
 
-        // Lógica de Acesso
+        // Lógica de Autenticação
         function validaKey() {
             const input = document.getElementById('keyInput').value;
             const msg = document.getElementById('msg');
             const login = document.getElementById('loginSection');
             const menu = document.getElementById('menuSection');
 
-            if (input.trim() === "MATRIX-2024") {
+            if (input === "MATRIX-2024") {
+                msg.className = "success-text";
                 msg.innerText = "ACESSO CONCEDIDO!";
-                msg.style.color = "#00ff00";
-                
                 setTimeout(() => {
-                    login.style.opacity = "0";
-                    setTimeout(() => {
-                        login.classList.add('hidden-panel');
-                        menu.classList.remove('hidden-panel');
-                        setTimeout(() => {
-                            menu.style.opacity = "1";
-                        }, 50);
-                    }, 400);
-                }, 600);
+                    login.classList.add('hidden');
+                    menu.classList.remove('hidden');
+                }, 800);
             } else {
-                msg.innerText = "CHAVE INVÁLIDA!";
-                msg.style.color = "#ff3333";
+                msg.className = "error-text";
+                msg.innerText = "ERRO: KEY INVÁLIDA";
                 shake(login);
             }
         }
 
         function shake(el) {
             el.style.transform = 'translateX(-10px)';
-            setTimeout(() => el.style.transform = 'translateX(10px)', 100);
-            setTimeout(() => el.style.transform = 'translateX(0)', 200);
+            setTimeout(() => el.style.transform = 'translateX(10px)', 80);
+            setTimeout(() => el.style.transform = 'translateX(-10px)', 160);
+            setTimeout(() => el.style.transform = 'translateX(0)', 240);
         }
     </script>
 </body>
