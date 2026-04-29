@@ -1,182 +1,115 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEXUS XITER VIP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --neon-green: #00ff41;
-            --dark-bg: #0d0208;
-            --glow: 0 0 10px #00ff41, 0 0 20px #00ff41;
+        :root { --neon-green: #00ff00; --dark-bg: #000000; }
+        body { margin: 0; background: var(--dark-bg); color: var(--neon-green); font-family: 'Fira Code', monospace; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
+
+        .nexus-panel {
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--neon-green);
+            box-shadow: 0 0 25px var(--neon-green), inset 0 0 10px var(--neon-green);
+            padding: 2rem; border-radius: 25px; width: 90%; max-width: 380px; text-align: center; position: relative; z-index: 100;
         }
 
-        body {
-            background-color: var(--dark-bg);
-            color: var(--neon-green);
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            padding: 15px;
-            overflow-x: hidden;
-            text-transform: uppercase;
-        }
+        .hidden-panel { display: none; }
+        .nexus-title { font-size: 1.6rem; font-weight: 700; letter-spacing: 5px; text-shadow: 0 0 15px var(--neon-green); margin-bottom: 0.5rem; }
+        .nexus-subtitle { font-size: 0.7rem; letter-spacing: 2px; opacity: 0.8; margin-bottom: 1.5rem; }
 
-        /* Efeito de Scanline da Matrix */
-        body::before {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 2;
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-        }
+        .nexus-input { background: #000; border: 1px solid var(--neon-green); color: #fff; width: 100%; padding: 12px; text-align: center; margin-bottom: 1rem; outline: none; text-transform: uppercase; }
+        .nexus-btn { background: var(--neon-green); color: #000; width: 100%; padding: 12px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; transition: 0.3s; box-shadow: 0 0 15px var(--neon-green); }
+        .nexus-btn:hover { background: #fff; box-shadow: 0 0 25px #fff; transform: scale(1.02); }
 
-        .header {
-            text-align: center;
-            border-bottom: 2px solid var(--neon-green);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            text-shadow: var(--glow);
-        }
-
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .hack-card {
-            border: 1px solid var(--neon-green);
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0, 255, 65, 0.05);
-            box-shadow: inset 0 0 5px rgba(0, 255, 65, 0.2);
-        }
-
-        .label {
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        /* Switch Customizado Matrix */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 45px;
-            height: 20px;
-        }
-
+        .mod-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(0, 255, 0, 0.05); margin-bottom: 6px; border-radius: 8px; border: 1px solid rgba(0, 255, 0, 0.2); }
+        
+        /* Switch Matrix */
+        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #111; transition: .4s; border-radius: 20px; border: 1px solid var(--neon-green); }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 2px; bottom: 2px; background-color: var(--neon-green); transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--neon-green); }
+        input:checked + .slider:before { transform: translateX(16px); background-color: #000; }
 
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #333;
-            transition: .4s;
-            border: 1px solid var(--neon-green);
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 14px; width: 14px;
-            left: 3px; bottom: 2px;
-            background-color: var(--neon-green);
-            transition: .4s;
-            box-shadow: var(--glow);
-        }
-
-        input:checked + .slider { background-color: rgba(0, 255, 65, 0.3); }
-        input:checked + .slider:before { transform: translateX(25px); }
-
-        .console {
-            margin-top: 20px;
-            font-size: 10px;
-            height: 60px;
-            overflow-y: hidden;
-            border: 1px solid #111;
-            padding: 5px;
-            color: #008f11;
-        }
+        #console { font-size: 0.6rem; color: #008f11; margin-top: 10px; text-align: left; height: 40px; overflow: hidden; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h2 id="title">NEXUS XITER VIP</h2>
-        <small id="status">STATUS: SHIZUKU ACTIVE</small>
+    <canvas id="matrix-canvas"></canvas>
+
+    <div id="loginSection" class="nexus-panel">
+        <h1 class="nexus-title">NEXUS VIP</h1>
+        <p class="nexus-subtitle">SECURITY CHECK</p>
+        <input type="password" id="keyInput" placeholder="INSIRA SUA KEY" class="nexus-input">
+        <button onclick="checkKey()" class="nexus-btn">VERIFICAR ACESSO</button>
+        <p id="msg" class="mt-2 text-xs font-bold"></p>
     </div>
 
-    <div class="container">
-        <div class="hack-card">
-            <span class="label">Audio ESP (Wall Hearing)</span>
-            <label class="switch">
-                <input type="checkbox" onchange="applyHack('audio', this.checked)">
-                <span class="slider"></span>
-            </label>
+    <div id="menuSection" class="nexus-panel hidden-panel">
+        <h1 class="nexus-title" style="font-size: 1.2rem;">MENU ATIVO</h1>
+        <p id="userStatus" class="nexus-subtitle text-white">KEY: VALIDADA</p>
+
+        <div class="space-y-1">
+            <div class="mod-item">
+                <span class="text-[10px] font-bold">AUDIO ESP (WALL)</span>
+                <label class="switch"><input type="checkbox" onchange="runHack('audio', '7ef9cb0', '00008052C0035FD6', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="mod-item">
+                <span class="text-[10px] font-bold">DAMAGE PLUS (100%)</span>
+                <label class="switch"><input type="checkbox" onchange="runHack('damage', '39b7988', '20008052C0035FD6', this.checked)"><span class="slider"></span></label>
+            </div>
+            <div class="mod-item">
+                <span class="text-[10px] font-bold">BYPASS ANTICHEAT</span>
+                <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+            </div>
         </div>
 
-        <div class="hack-card">
-            <span class="label">Damage Plus (Damage VIP)</span>
-            <label class="switch">
-                <input type="checkbox" onchange="applyHack('damage', this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="hack-card">
-            <span class="label">Munição Infinita</span>
-            <label class="switch">
-                <input type="checkbox" onchange="applyHack('ammo', this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
-    </div>
-
-    <div class="console" id="log">
-        > NEXUS_SYSTEM_READY...<br>
-        > WAITING_FOR_USER_COMMAND...
+        <div id="console">> SYSTEM_LOADED...</div>
+        <button onclick="Nexus.logout()" class="mt-4 text-[9px] text-red-500 border border-red-500 p-1 w-full">LOGOUT</button>
     </div>
 
     <script>
-        // Função para log no console do painel
-        function log(msg) {
-            const console = document.getElementById('log');
-            console.innerHTML = "> " + msg + "<br>" + console.innerHTML;
+        // Matrix Effect
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, drops;
+        function init() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; drops = new Array(Math.floor(width / 18)).fill(1); }
+        function draw() { ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; ctx.fillRect(0, 0, width, height); ctx.fillStyle = '#0F0'; ctx.font = '15px monospace'; drops.forEach((y, i) => { const char = String.fromCharCode(0x30A0 + Math.random() * 96); ctx.fillText(char, i * 18, y * 18); if (y * 18 > height && Math.random() > 0.975) drops[i] = 0; drops[i]++; }); }
+        window.addEventListener('resize', init); init(); setInterval(draw, 50);
+
+        // Lógica de Ponte e Shizuku
+        function log(m) { document.getElementById('console').innerHTML = "> " + m; }
+
+        function checkKey() {
+            const key = document.getElementById('keyInput').value;
+            // Se você usar Firebase, mude isso para Nexus.checkKeyOnline(key)
+            if (key === "MATRIX-2026") {
+                document.getElementById('msg').innerText = "ACESSO LIBERADO!";
+                document.getElementById('msg').style.color = "#00ff00";
+                setTimeout(() => {
+                    document.getElementById('loginSection').classList.add('hidden-panel');
+                    document.getElementById('menuSection').classList.remove('hidden-panel');
+                }, 1000);
+            } else {
+                document.getElementById('msg').innerText = "KEY INVÁLIDA!";
+                document.getElementById('msg').style.color = "#ff0000";
+            }
         }
 
-        function applyHack(type, active) {
-            if (typeof Nexus === 'undefined') {
-                log("<span style='color:red'>ERRO: Ponte Nexus não encontrada!</span>");
-                return;
-            }
-
-            switch(type) {
-                case 'audio':
-                    // Offset: 0x7ef9cb0 | Patch: MOV W0, #0 / RET
-                    const audioPatch = active ? "00008052C0035FD6" : "ORIGINAL_BYTES";
-                    Nexus.patchMemory("7ef9cb0", audioPatch);
-                    log("AUDIO_ESP: " + (active ? "ENABLED" : "DISABLED"));
-                    break;
-
-                case 'damage':
-                    // Offset de Exemplo | Patch: MOV W0, #1 / RET
-                    const damagePatch = active ? "20008052C0035FD6" : "ORIGINAL_BYTES";
-                    Nexus.patchMemory("39b7988", damagePatch);
-                    log("DAMAGE_VIP: " + (active ? "ENABLED" : "DISABLED"));
-                    break;
-
-                case 'ammo':
-                    // Exemplo para Munição Infinita
-                    Nexus.patchMemory("OFFSET_AMMO", active ? "20008052C0035FD6" : "ORIGINAL");
-                    log("INF_AMMO: " + (active ? "ENABLED" : "DISABLED"));
-                    break;
+        function runHack(name, offset, patch, isActive) {
+            if (typeof Nexus !== 'undefined') {
+                // Se desligar, mandamos um patch de retorno ou apenas paramos (depende da sua lib)
+                const hex = isActive ? patch : "REVERT_HEX"; 
+                Nexus.patchMemory(offset, hex);
+                log(name.toUpperCase() + ": " + (isActive ? "ON" : "OFF"));
+            } else {
+                log("ERRO: PONTE JAVA NÃO DETECTADA!");
             }
         }
     </script>
