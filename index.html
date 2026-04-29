@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-pt">
 <head>
@@ -7,22 +8,138 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --neon-green: #00ff00; --dark-bg: #000000; }
-        body { margin: 0; background: var(--dark-bg); color: var(--neon-green); font-family: 'Fira Code', monospace; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.5; }
-        .nexus-panel { background: rgba(0, 0, 0, 0.95); border: 2px solid var(--neon-green); box-shadow: 0 0 25px var(--neon-green), inset 0 0 10px var(--neon-green); padding: 2.5rem 2rem; border-radius: 25px; width: 90%; max-width: 380px; text-align: center; position: relative; z-index: 100; }
+        :root {
+            --neon-green: #00ff00;
+            --dark-bg: #000000;
+        }
+
+        body {
+            margin: 0;
+            background: var(--dark-bg);
+            color: var(--neon-green);
+            font-family: 'Fira Code', monospace;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        /* Estilo idêntico à imagem enviada */
+        .nexus-panel {
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid var(--neon-green);
+            box-shadow: 0 0 25px var(--neon-green), inset 0 0 10px var(--neon-green);
+            padding: 2.5rem 2rem;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+            position: relative;
+            z-index: 100;
+        }
+
         .hidden-panel { display: none; }
-        .nexus-title { font-size: 1.8rem; font-weight: 700; letter-spacing: 5px; text-shadow: 0 0 15px var(--neon-green); margin-bottom: 0.5rem; }
-        .nexus-subtitle { font-size: 0.75rem; letter-spacing: 3px; opacity: 0.8; margin-bottom: 2rem; }
-        .nexus-input { background: #000; border: 1px solid var(--neon-green); color: #fff; width: 100%; padding: 15px; text-align: center; font-size: 0.9rem; margin-bottom: 1.5rem; outline: none; text-transform: uppercase; }
-        .nexus-btn { background: var(--neon-green); color: #000; width: 100%; padding: 15px; font-weight: 900; font-size: 1rem; text-transform: uppercase; border: none; cursor: pointer; transition: 0.3s; box-shadow: 0 0 15px var(--neon-green); }
-        .mod-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(0, 255, 0, 0.05); margin-bottom: 8px; border-radius: 8px; border: 1px solid rgba(0, 255, 0, 0.2); }
-        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+
+        .nexus-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 5px;
+            text-shadow: 0 0 15px var(--neon-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .nexus-subtitle {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+
+        /* Input de Key */
+        .nexus-input {
+            background: #000;
+            border: 1px solid var(--neon-green);
+            color: #fff;
+            width: 100%;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            outline: none;
+            text-transform: uppercase;
+        }
+
+        .nexus-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+        }
+
+        /* Botão de Logar */
+        .nexus-btn {
+            background: var(--neon-green);
+            color: #000;
+            width: 100%;
+            padding: 15px;
+            font-weight: 900;
+            font-size: 1rem;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+
+        .nexus-btn:hover {
+            background: #fff;
+            box-shadow: 0 0 25px #fff;
+            transform: scale(1.02);
+        }
+
+        /* Mod Menu Items */
+        .mod-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(0, 255, 0, 0.05);
+            margin-bottom: 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 0, 0.2);
+        }
+
+        /* Switch do Menu */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #111; transition: .4s; border-radius: 20px; border: 1px solid var(--neon-green); }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: var(--neon-green); transition: .4s; border-radius: 50%; }
+        .slider {
+            position: absolute; cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #111; transition: .4s;
+            border-radius: 20px; border: 1px solid var(--neon-green);
+        }
+        .slider:before {
+            position: absolute; content: "";
+            height: 14px; width: 14px; left: 2px; bottom: 2px;
+            background-color: var(--neon-green); transition: .4s; border-radius: 50%;
+        }
         input:checked + .slider { background-color: var(--neon-green); }
         input:checked + .slider:before { transform: translateX(20px); background-color: #000; }
+
         #msg { height: 20px; margin-top: 10px; font-size: 0.75rem; font-weight: bold; }
     </style>
 </head>
@@ -30,87 +147,108 @@
 
     <canvas id="matrix-canvas"></canvas>
 
+    <!-- Painel de Login (Baseado na imagem) -->
     <div id="loginSection" class="nexus-panel">
-        <h1 class="nexus-title">NEXUS XITER</h1>
-        <p class="nexus-subtitle text-green-500">AUTENTICAÇÃO REQUERIDA</p>
-        <input type="password" id="keyInput" placeholder="COLE SUA KEY" class="nexus-input">
-        <button onclick="validaKey()" class="nexus-btn">ENTRAR NO SISTEMA</button>
+        <h1 class="nexus-title">NEXUS XITER VIP</h1>
+        <p class="nexus-subtitle text-green-500">SISTEMA DE AUTENTICAÇÃO</p>
+        
+        <input type="password" id="keyInput" placeholder="COLE SUA KEY" autocomplete="off" class="nexus-input">
+        
+        <button onclick="validaKey()" class="nexus-btn">LOGAR NO MOD</button>
+        
         <p id="msg"></p>
     </div>
 
+    <!-- Mod Menu (Aparece após a Key) -->
     <div id="menuSection" class="nexus-panel hidden-panel">
-        <h1 class="nexus-title" style="font-size: 1.4rem;">NEXUS VIP</h1>
-        <button onclick="abrirJogo()" class="mb-4 text-[10px] border border-green-500 p-1 w-full hover:bg-green-500 hover:text-black">INICIAR FREE FIRE</button>
+        <h1 class="nexus-title" style="font-size: 1.4rem;">MENU ATIVO</h1>
+        <p class="nexus-subtitle mb-4">FUNÇÕES DISPONÍVEIS</p>
 
         <div class="space-y-2 text-left">
             <div class="mod-item">
                 <span class="text-xs font-bold">AUTO HEADSHOT</span>
-                <label class="switch">
-                    <input type="checkbox" onchange="toggleCheat('Aimbot', '0x3A5B12', '00 00 A0 E3', this)">
-                    <span class="slider"></span>
-                </label>
+                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+            </div>
+            <div class="mod-item">
+                <span class="text-xs font-bold">AIMLOCK</span>
+                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
             </div>
             <div class="mod-item">
                 <span class="text-xs font-bold">ESP LINE (ANTENA)</span>
-                <label class="switch">
-                    <input type="checkbox" onchange="toggleCheat('EspLine', '0x4B2C34', '01 00 A0 E3', this)">
-                    <span class="slider"></span>
-                </label>
+                <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
             </div>
             <div class="mod-item">
-                <span class="text-xs font-bold">WALLHACK (V1)</span>
-                <label class="switch">
-                    <input type="checkbox" onchange="toggleCheat('Wallhack', '0x1A2B3C', '0F 00 A0 E1', this)">
-                    <span class="slider"></span>
-                </label>
+                <span class="text-xs font-bold">WALLHACK</span>
+                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
             </div>
         </div>
 
-        <button onclick="Android.fecharMenu()" class="nexus-btn mt-6" style="background: transparent; border: 1px solid #ff0000; color: #ff0000; font-size: 0.7rem; padding: 10px; box-shadow: none;">
-            FECHAR MOD MENU
+        <button onclick="location.reload()" class="nexus-btn mt-6" style="background: transparent; border: 1px solid var(--neon-green); color: var(--neon-green); font-size: 0.7rem; padding: 10px;">
+            SAIR DO SISTEMA
         </button>
     </div>
 
     <script>
-        // Matrix Rain (Simplificado)
+        // Matrix Rain
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
         let width, height, drops;
-        function init() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; drops = new Array(Math.floor(width / 18)).fill(1); }
-        function draw() { ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; ctx.fillRect(0, 0, width, height); ctx.fillStyle = '#0F0'; ctx.font = '15px monospace'; drops.forEach((y, i) => { const char = String.fromCharCode(0x30A0 + Math.random() * 96); ctx.fillText(char, i * 18, y * 18); if (y * 18 > height && Math.random() > 0.975) drops[i] = 0; drops[i]++; }); }
+
+        function init() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            drops = new Array(Math.floor(width / 18)).fill(1);
+        }
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = '#0F0';
+            ctx.font = '15px monospace';
+            drops.forEach((y, i) => {
+                const char = String.fromCharCode(0x30A0 + Math.random() * 96);
+                ctx.fillText(char, i * 18, y * 18);
+                if (y * 18 > height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }
         window.addEventListener('resize', init);
-        init(); setInterval(draw, 50);
+        init();
+        setInterval(draw, 50);
 
-        // FUNÇÕES DA PONTE COM O JAVA (SKETCHWARE)
-        function toggleCheat(name, offset, hex, element) {
-            if (element.checked) {
-                // Chama a função no ModMenuService.java
-                if(window.Android) Android.applyPatch(name, offset, hex);
-            } else {
-                if(window.Android) Android.removePatch(offset);
-            }
-        }
-
-        function abrirJogo() {
-            if(window.Android) Android.abrirJogo();
-        }
-
+        // Lógica de Autenticação
         function validaKey() {
             const input = document.getElementById('keyInput').value;
             const msg = document.getElementById('msg');
-            // Chave Padrão
-            if (input === "NEXUS-2026") {
-                msg.innerText = "ACESSO LIBERADO!";
+            const login = document.getElementById('loginSection');
+            const menu = document.getElementById('menuSection');
+
+            // CHAVE DE ACESSO
+            if (input === "MATRIX-2024") {
+                msg.innerText = "AUTENTICADO COM SUCESSO!";
                 msg.style.color = "#00ff00";
+                
                 setTimeout(() => {
-                    document.getElementById('loginSection').classList.add('hidden-panel');
-                    document.getElementById('menuSection').classList.remove('hidden-panel');
+                    login.classList.add('hidden-panel');
+                    menu.classList.remove('hidden-panel');
                 }, 800);
             } else {
-                msg.innerText = "KEY INCORRETA!";
+                msg.innerText = "KEY INVÁLIDA OU EXPIRADA!";
                 msg.style.color = "#ff0000";
+                shake(login);
             }
+        }
+
+        function shake(el) {
+            el.animate([
+                { transform: 'translateX(0)' },
+                { transform: 'translateX(-10px)' },
+                { transform: 'translateX(10px)' },
+                { transform: 'translateX(0)' }
+            ], { duration: 150, iterations: 2 });
         }
     </script>
 </body>
 </html>
+
+```
