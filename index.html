@@ -1,67 +1,100 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NEXUS XITER VIP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { background: rgba(0,0,0,0.8); color: #00ff41; font-family: monospace; padding: 15px; }
-        .mod-item { 
-            display: flex; justify-content: space-between; 
-            padding: 10px; border: 1px solid #004400; margin-bottom: 5px;
-            background: black; border-radius: 8px;
-        }
-        .btn-logar {
-            background: #00ff41; color: black; border: none; padding: 10px;
-            width: 100%; font-weight: bold; margin-top: 10px;
-        }
-        .hidden { display: none; }
+        :root { --neon-green: #00ff00; --dark-bg: #000000; }
+        body { margin: 0; background: var(--dark-bg); color: var(--neon-green); font-family: 'Fira Code', monospace; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.5; }
+        .nexus-panel { background: rgba(0, 0, 0, 0.95); border: 2px solid var(--neon-green); box-shadow: 0 0 25px var(--neon-green); padding: 2rem; border-radius: 25px; width: 90%; max-width: 350px; text-align: center; position: relative; z-index: 100; }
+        .hidden-panel { display: none; }
+        .nexus-title { font-size: 1.5rem; font-weight: 700; letter-spacing: 3px; text-shadow: 0 0 15px var(--neon-green); margin-bottom: 1.5rem; }
+        .nexus-input { background: #000; border: 1px solid var(--neon-green); color: #fff; width: 100%; padding: 12px; text-align: center; margin-bottom: 1rem; outline: none; }
+        .nexus-btn { background: var(--neon-green); color: #000; width: 100%; padding: 12px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; box-shadow: 0 0 10px var(--neon-green); }
+        .mod-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(0, 255, 0, 0.05); margin-bottom: 8px; border-radius: 8px; border: 1px solid rgba(0, 255, 0, 0.2); }
         /* Switch */
-        .switch { position: relative; width: 40px; height: 20px; }
+        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 20px; }
-        input:checked + .slider { background-color: #00ff41; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #111; transition: .4s; border-radius: 20px; border: 1px solid var(--neon-green); }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 2px; bottom: 2px; background-color: var(--neon-green); transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--neon-green); }
+        input:checked + .slider:before { transform: translateX(16px); background-color: #000; }
     </style>
 </head>
 <body>
 
-    <div id="login">
-        <h3>NEXUS INJECTOR</h3>
-        <input type="text" id="k" placeholder="KEY" style="width:80%; padding:8px; background:black; color:#0f0; border:1px solid #0f0;">
-        <button class="btn-logar" onclick="logar()">ENTRAR</button>
+    <canvas id="matrix-canvas"></canvas>
+
+    <div id="loginSection" class="nexus-panel">
+        <h1 class="nexus-title">NEXUS LOGIN</h1>
+        <input type="password" id="keyInput" placeholder="INTRODUZA A KEY" class="nexus-input">
+        <button onclick="validaKey()" class="nexus-btn">CONECTAR</button>
+        <p id="msg" style="font-size: 10px; margin-top: 10px;"></p>
     </div>
 
-    <div id="painel" class="hidden">
-        <h3>PAINEL FF VIP</h3>
+    <div id="menuSection" class="nexus-panel hidden-panel">
+        <h1 class="nexus-title" style="font-size: 1.2rem;">MOD MENU ATIVO</h1>
         
         <div class="mod-item">
-            <span>AUTO HEADSHOT</span>
-            <label class="switch">
-                <input type="checkbox" onchange="enviarComando('headshot', this.checked)">
-                <span class="slider"></span>
-            </label>
+            <span class="text-xs font-bold">AUTO HEADSHOT</span>
+            <label class="switch"><input type="checkbox" onchange="enviarComando('headshot', this.checked)"><span class="slider"></span></label>
         </div>
 
         <div class="mod-item">
-            <span>AIMLOCK</span>
-            <label class="switch">
-                <input type="checkbox" onchange="enviarComando('aimlock', this.checked)">
-                <span class="slider"></span>
-            </label>
+            <span class="text-xs font-bold">AIMLOCK</span>
+            <label class="switch"><input type="checkbox" onchange="enviarComando('aimlock', this.checked)"><span class="slider"></span></label>
         </div>
+
+        <div class="mod-item">
+            <span class="text-xs font-bold">ESP LINE</span>
+            <label class="switch"><input type="checkbox" onchange="enviarComando('esp', this.checked)"><span class="slider"></span></label>
+        </div>
+
+        <button onclick="location.reload()" class="nexus-btn mt-4" style="font-size: 10px; background: transparent; color: red; border: 1px solid red; box-shadow: none;">DESLIGAR TUDO</button>
     </div>
 
     <script>
-        function logar() {
-            if(document.getElementById('k').value === "MATRIX-2024") {
-                document.getElementById('login').classList.add('hidden');
-                document.getElementById('painel').classList.remove('hidden');
-            } else { alert("KEY ERRADA!"); }
+        // Matrix Effect
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+        let drops = new Array(Math.floor(width / 18)).fill(1);
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = '#0F0';
+            ctx.font = '15px monospace';
+            drops.forEach((y, i) => {
+                const char = String.fromCharCode(0x30A0 + Math.random() * 96);
+                ctx.fillText(char, i * 18, y * 18);
+                if (y * 18 > height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }
+        setInterval(draw, 50);
+
+        // LOGIN
+        function validaKey() {
+            const input = document.getElementById('keyInput').value;
+            if (input === "MATRIX-2024") {
+                document.getElementById('loginSection').classList.add('hidden-panel');
+                document.getElementById('menuSection').classList.remove('hidden-panel');
+            } else {
+                document.getElementById('msg').innerText = "KEY INVÁLIDA!";
+                document.getElementById('msg').style.color = "red";
+            }
         }
 
-        // ESTA FUNÇÃO FALA COM O SKETCHWARE
-        function enviarComando(funcao, status) {
+        // PONTE COM O SKETCHWARE
+        function enviarComando(hack, status) {
             if (window.Android) {
-                window.Android.fazerAcao(funcao, status);
+                window.Android.fazerAcao(hack, status);
             }
         }
     </script>
