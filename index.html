@@ -3,7 +3,7 @@
 <html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NEXUS XITER VIP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
@@ -11,8 +11,13 @@
         :root {
             --neon-green: #00ff00;
             --dark-bg: #000000;
-            --panel-bg: rgba(0, 0, 0, 0.9);
-            --item-bg: rgba(0, 255, 0, 0.05);
+            --panel-bg: rgba(0, 0, 0, 0.95);
+            --item-bg: rgba(0, 255, 0, 0.07);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -20,11 +25,14 @@
             background: var(--dark-bg);
             color: var(--neon-green);
             font-family: 'Fira Code', monospace;
-            height: 100vh;
+            /* Usa dvh para evitar bugs em navegadores móveis */
+            min-height: 100dvh;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow-x: hidden;
+            position: relative;
         }
 
         #matrix-canvas {
@@ -33,8 +41,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: 1; /* Fica no fundo */
             opacity: 0.4;
+            pointer-events: none;
         }
 
         /* Content Wrapper */
@@ -42,7 +51,8 @@
             width: 100%;
             max-width: 400px;
             padding: 20px;
-            perspective: 1000px;
+            z-index: 10; /* Fica à frente do canvas */
+            position: relative;
         }
 
         /* Estilo do Painel */
@@ -50,61 +60,57 @@
             background: var(--panel-bg);
             border: 2px solid var(--neon-green);
             box-shadow: 0 0 30px rgba(0, 255, 0, 0.3), inset 0 0 15px rgba(0, 255, 0, 0.1);
-            padding: 40px 30px;
-            border-radius: 30px;
+            padding: 35px 25px;
+            border-radius: 25px;
             text-align: center;
             backdrop-filter: blur(10px);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s ease;
+            width: 100%;
         }
 
         .hidden-panel {
             display: none;
             opacity: 0;
-            transform: scale(0.9) rotateX(-10deg);
+            transform: translateY(20px);
         }
 
         /* Tipografia */
         .nexus-title {
-            font-size: 1.75rem;
+            font-size: 1.6rem;
             font-weight: 700;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             text-transform: uppercase;
             text-shadow: 0 0 10px var(--neon-green);
-            margin-bottom: 8px;
+            margin-bottom: 5px;
         }
 
         .nexus-subtitle {
-            font-size: 0.7rem;
-            letter-spacing: 3px;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
             color: var(--neon-green);
-            opacity: 0.7;
+            opacity: 0.8;
             text-transform: uppercase;
-            margin-bottom: 35px;
+            margin-bottom: 30px;
         }
 
         /* Inputs */
-        .nexus-input-group {
-            position: relative;
-            margin-bottom: 25px;
-        }
-
         .nexus-input {
-            background: rgba(0, 20, 0, 0.5);
-            border: 1px solid rgba(0, 255, 0, 0.3);
+            background: rgba(0, 0, 0, 1);
+            border: 1px solid rgba(0, 255, 0, 0.4);
             color: #fff;
             width: 100%;
             padding: 16px;
             text-align: center;
             font-size: 0.9rem;
-            border-radius: 8px;
+            border-radius: 12px;
             outline: none;
             transition: 0.3s;
+            margin-bottom: 20px;
         }
 
         .nexus-input:focus {
             border-color: var(--neon-green);
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
-            background: rgba(0, 30, 0, 0.7);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
         }
 
         /* Botões */
@@ -114,53 +120,36 @@
             width: 100%;
             padding: 16px;
             font-weight: 900;
-            font-size: 1rem;
+            font-size: 0.95rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.4);
-        }
-
-        .nexus-btn:hover {
-            background: #fff;
-            box-shadow: 0 0 25px #fff;
-            transform: translateY(-2px);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 0, 0.3);
         }
 
         .nexus-btn:active {
-            transform: translateY(1px);
+            transform: scale(0.98);
+            opacity: 0.9;
         }
 
-        /* Itens do Menu */
-        .menu-items-container {
-            text-align: left;
-            margin-top: 20px;
-        }
-
+        /* Menu de Funções */
         .mod-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 18px;
+            padding: 14px 16px;
             background: var(--item-bg);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             border-radius: 12px;
-            border: 1px solid rgba(0, 255, 0, 0.1);
-            transition: 0.2s;
-        }
-
-        .mod-item:hover {
-            border-color: rgba(0, 255, 0, 0.5);
-            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.15);
         }
 
         .mod-name {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 700;
-            letter-spacing: 1px;
             text-transform: uppercase;
         }
 
@@ -168,41 +157,43 @@
         .switch {
             position: relative;
             display: inline-block;
-            width: 44px;
+            width: 42px;
             height: 22px;
         }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
             position: absolute; cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #1a1a1a; transition: .4s;
-            border-radius: 34px; border: 1px solid rgba(0, 255, 0, 0.3);
+            background-color: #111; transition: .3s;
+            border-radius: 34px; border: 1px solid rgba(0, 255, 0, 0.4);
         }
         .slider:before {
             position: absolute; content: "";
             height: 16px; width: 16px; left: 2px; bottom: 2px;
-            background-color: var(--neon-green); transition: .4s; border-radius: 50%;
+            background-color: var(--neon-green); transition: .3s; border-radius: 50%;
         }
-        input:checked + .slider { background-color: var(--neon-green); border-color: var(--neon-green); }
-        input:checked + .slider:before { transform: translateX(22px); background-color: #000; }
+        input:checked + .slider { background-color: var(--neon-green); }
+        input:checked + .slider:before { transform: translateX(20px); background-color: #000; }
 
         #msg { 
-            height: 24px; 
-            margin-top: 20px; 
+            margin-top: 15px; 
             font-size: 0.7rem; 
             font-weight: 700;
-            text-transform: uppercase;
+            min-height: 18px;
         }
 
         .footer-link {
-            margin-top: 30px;
-            font-size: 0.6rem;
-            text-decoration: underline;
-            opacity: 0.4;
+            display: block;
+            margin-top: 25px;
+            font-size: 0.65rem;
+            color: var(--neon-green);
+            opacity: 0.5;
+            text-decoration: none;
+            background: none;
+            border: none;
+            width: 100%;
             cursor: pointer;
-            transition: 0.3s;
         }
-        .footer-link:hover { opacity: 1; }
     </style>
 </head>
 <body>
@@ -210,32 +201,30 @@
     <canvas id="matrix-canvas"></canvas>
 
     <div class="main-container">
-        <!-- Painel de Login -->
+        <!-- Secção de Login -->
         <div id="loginSection" class="nexus-panel">
             <h1 class="nexus-title">NEXUS VIP</h1>
-            <p class="nexus-subtitle">Sistema de Autenticação</p>
+            <p class="nexus-subtitle">Verificação de Acesso</p>
             
-            <div class="nexus-input-group">
-                <input type="password" id="keyInput" placeholder="COLE SUA KEY AQUI" autocomplete="off" class="nexus-input">
-            </div>
+            <input type="password" id="keyInput" placeholder="COLE A SUA KEY AQUI" autocomplete="off" class="nexus-input">
             
-            <button onclick="validaKey()" class="nexus-btn">LOGAR NO MOD</button>
+            <button onclick="validaKey()" class="nexus-btn">ENTRAR NO SISTEMA</button>
             
             <p id="msg"></p>
         </div>
 
-        <!-- Mod Menu -->
+        <!-- Secção do Menu -->
         <div id="menuSection" class="nexus-panel hidden-panel">
-            <h1 class="nexus-title" style="font-size: 1.4rem;">PAINEL ATIVO</h1>
-            <p class="nexus-subtitle">Funções Elite Liberadas</p>
+            <h1 class="nexus-title" style="font-size: 1.3rem;">MENU ATIVO</h1>
+            <p class="nexus-subtitle">Elite Scripts Liberados</p>
 
-            <div class="menu-items-container">
+            <div class="space-y-1">
                 <div class="mod-item">
                     <span class="mod-name">AUTO HEADSHOT</span>
                     <label class="switch"><input type="checkbox"><span class="slider"></span></label>
                 </div>
                 <div class="mod-item">
-                    <span class="mod-name">AIMLOCK</span>
+                    <span class="mod-name">AIMLOCK (FIXAR)</span>
                     <label class="switch"><input type="checkbox"><span class="slider"></span></label>
                 </div>
                 <div class="mod-item">
@@ -243,17 +232,17 @@
                     <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
                 </div>
                 <div class="mod-item">
-                    <span class="mod-name">WALLHACK (V2)</span>
+                    <span class="mod-name">ATRAVESSAR TUDO</span>
                     <label class="switch"><input type="checkbox"><span class="slider"></span></label>
                 </div>
             </div>
 
-            <button onclick="location.reload()" class="footer-link">ENCERRAR SESSÃO SEGURA</button>
+            <button onclick="location.reload()" class="footer-link">TERMINAR SESSÃO</button>
         </div>
     </div>
 
     <script>
-        // Matrix Background
+        // Matrix Background corrigido
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
         let width, height, drops;
@@ -261,7 +250,8 @@
         function init() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
-            drops = new Array(Math.floor(width / 20)).fill(1);
+            const columns = Math.floor(width / 20);
+            drops = new Array(columns).fill(1);
         }
 
         function draw() {
@@ -269,18 +259,19 @@
             ctx.fillRect(0, 0, width, height);
             ctx.fillStyle = '#00ff00';
             ctx.font = '14px monospace';
-            drops.forEach((y, i) => {
+            for(let i = 0; i < drops.length; i++) {
                 const char = String.fromCharCode(0x30A0 + Math.random() * 96);
-                ctx.fillText(char, i * 20, y * 20);
-                if (y * 20 > height && Math.random() > 0.975) drops[i] = 0;
+                ctx.fillText(char, i * 20, drops[i] * 20);
+                if (drops[i] * 20 > height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
-            });
+            }
         }
+        
         window.addEventListener('resize', init);
         init();
         setInterval(draw, 50);
 
-        // Lógica
+        // Lógica de Acesso
         function validaKey() {
             const input = document.getElementById('keyInput').value;
             const msg = document.getElementById('msg');
@@ -288,36 +279,30 @@
             const menu = document.getElementById('menuSection');
 
             if (input.trim() === "MATRIX-2024") {
-                msg.innerText = "ACESSO CONCEDIDO...";
-                msg.style.color = "var(--neon-green)";
+                msg.innerText = "ACESSO CONCEDIDO!";
+                msg.style.color = "#00ff00";
                 
                 setTimeout(() => {
                     login.style.opacity = "0";
-                    login.style.transform = "scale(0.9) translateY(20px)";
-                    
                     setTimeout(() => {
-                        login.style.display = "none";
-                        menu.style.display = "block";
-                        // Forçar reflow para animação
-                        void menu.offsetWidth;
-                        menu.style.opacity = "1";
-                        menu.style.transform = "scale(1) translateY(0)";
-                    }, 500);
-                }, 800);
+                        login.classList.add('hidden-panel');
+                        menu.classList.remove('hidden-panel');
+                        setTimeout(() => {
+                            menu.style.opacity = "1";
+                        }, 50);
+                    }, 400);
+                }, 600);
             } else {
-                msg.innerText = "ERRO: KEY INVÁLIDA";
+                msg.innerText = "CHAVE INVÁLIDA!";
                 msg.style.color = "#ff3333";
                 shake(login);
             }
         }
 
         function shake(el) {
-            el.animate([
-                { transform: 'translateX(0)' },
-                { transform: 'translateX(-8px)' },
-                { transform: 'translateX(8px)' },
-                { transform: 'translateX(0)' }
-            ], { duration: 150, iterations: 2 });
+            el.style.transform = 'translateX(-10px)';
+            setTimeout(() => el.style.transform = 'translateX(10px)', 100);
+            setTimeout(() => el.style.transform = 'translateX(0)', 200);
         }
     </script>
 </body>
