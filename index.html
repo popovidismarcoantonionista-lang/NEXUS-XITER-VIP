@@ -1,69 +1,291 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FF ELITE MOD - MATRIX EDITION</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { background: rgba(0,0,0,0.8); color: #00ff41; font-family: monospace; padding: 15px; }
-        .mod-item { 
-            display: flex; justify-content: space-between; 
-            padding: 10px; border: 1px solid #004400; margin-bottom: 5px;
-            background: black; border-radius: 8px;
+        :root {
+            --ff-red: #ff003c;
+            --matrix-green: #00ff41;
+            --glow: 0 0 15px rgba(0, 255, 65, 0.4);
         }
-        .btn-logar {
-            background: #00ff41; color: black; border: none; padding: 10px;
-            width: 100%; font-weight: bold; margin-top: 10px;
+
+        body {
+            margin: 0;
+            background: #000;
+            color: var(--matrix-green);
+            font-family: 'Fira Code', monospace;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
-        .hidden { display: none; }
-        /* Switch */
-        .switch { position: relative; width: 40px; height: 20px; }
+
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .glass-panel {
+            background: rgba(0, 10, 0, 0.9);
+            border: 1px solid var(--matrix-green);
+            box-shadow: var(--glow);
+            padding: 2rem;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 420px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 100;
+        }
+
+        .hidden-panel { display: none; }
+
+        /* Estilo FF Mod Items */
+        .mod-group {
+            background: rgba(0, 255, 65, 0.05);
+            border: 1px solid rgba(0, 255, 65, 0.1);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .mod-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #333;
+            display: inline-block;
+        }
+
+        input:checked + .slider + .status-dot {
+            background: var(--matrix-green);
+            box-shadow: 0 0 8px var(--matrix-green);
+        }
+
+        /* Checkbox Custom */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 38px;
+            height: 20px;
+        }
+
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 20px; }
-        input:checked + .slider { background-color: #00ff41; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #111;
+            transition: .3s;
+            border-radius: 20px;
+            border: 1px solid var(--matrix-green);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px; width: 14px;
+            left: 2px; bottom: 2px;
+            background-color: var(--matrix-green);
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--matrix-green); }
+        input:checked + .slider:before { transform: translateX(18px); background-color: #000; }
+
+        .btn-main {
+            background: var(--matrix-green);
+            color: #000;
+            width: 100%;
+            padding: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 4px;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        .btn-main:hover {
+            background: #fff;
+            box-shadow: 0 0 20px #fff;
+        }
+
+        .tag-danger {
+            color: var(--ff-red);
+            font-size: 10px;
+            border: 1px solid var(--ff-red);
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
     </style>
 </head>
 <body>
 
-    <div id="login">
-        <h3>NEXUS INJECTOR</h3>
-        <input type="text" id="k" placeholder="KEY" style="width:80%; padding:8px; background:black; color:#0f0; border:1px solid #0f0;">
-        <button class="btn-logar" onclick="logar()">ENTRAR</button>
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- Login -->
+    <div id="loginSection" class="glass-panel text-center">
+        <h2 class="text-xl font-bold mb-1">FF EXPLOIT</h2>
+        <p class="text-[10px] opacity-60 mb-6 tracking-widest">SISTEMA DE INJECÇÃO DE SCRIPTS</p>
+        
+        <input type="password" id="keyInput" placeholder="INTRODUZIR KEY" 
+               class="w-full bg-black border border-green-900 p-3 text-center mb-4 text-green-400 outline-none focus:border-green-400">
+        
+        <button onclick="validaKey()" class="btn-main">CONECTAR AO SERVIDOR</button>
+        <p id="msg" class="mt-4 text-xs font-bold min-h-[16px]"></p>
     </div>
 
-    <div id="painel" class="hidden">
-        <h3>PAINEL FF VIP</h3>
+    <!-- Mod Menu FF -->
+    <div id="menuSection" class="glass-panel hidden-panel">
+        <div class="flex justify-between items-center mb-4 border-b border-green-900 pb-2">
+            <div>
+                <h2 class="text-lg font-bold text-white">FF MOD MENU</h2>
+                <p class="text-[10px] text-green-500">UTILIZADOR: PREMIUM_USER</p>
+            </div>
+            <span class="text-[10px] opacity-40">v2.5 (ANTI-BAN)</span>
+        </div>
+
+        <!-- Funções de Combate -->
+        <p class="text-[10px] uppercase opacity-40 mb-2 font-bold">Ajustes de Combate</p>
         
-        <div class="mod-item">
-            <span>AUTO HEADSHOT</span>
+        <div class="mod-group flex justify-between items-center">
+            <span class="mod-label">AUTO HEADSHOT <span class="tag-danger">RISCO</span></span>
             <label class="switch">
-                <input type="checkbox" onchange="enviarComando('headshot', this.checked)">
+                <input type="checkbox">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <div class="mod-item">
-            <span>AIMLOCK</span>
+        <div class="mod-group flex justify-between items-center">
+            <span class="mod-label">AIMLOCK (MIRAR)</span>
             <label class="switch">
-                <input type="checkbox" onchange="enviarComando('aimlock', this.checked)">
+                <input type="checkbox">
                 <span class="slider"></span>
             </label>
         </div>
+
+        <div class="mod-group flex justify-between items-center">
+            <span class="mod-label">REMOVER RECOIL</span>
+            <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- Funções de Visual (ESP) -->
+        <p class="text-[10px] uppercase opacity-40 mt-4 mb-2 font-bold">Visual & ESP</p>
+        
+        <div class="mod-group flex justify-between items-center">
+            <span class="mod-label">ANTENA NA CABEÇA</span>
+            <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="mod-group flex justify-between items-center">
+            <span class="mod-label">LINHA DE INIMIGO</span>
+            <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- Ajuste de Sensibilidade -->
+        <div class="mt-4">
+            <div class="flex justify-between text-[10px] mb-1">
+                <span>SENSIBILIDADE ( DPI )</span>
+                <span id="dpiVal" class="text-white">x2.5</span>
+            </div>
+            <input type="range" min="1" max="5" step="0.1" value="2.5" 
+                   class="w-full accent-green-400 bg-black h-1" 
+                   oninput="document.getElementById('dpiVal').innerText = 'x' + this.value">
+        </div>
+
+        <button onclick="location.reload()" class="btn-main bg-zinc-900 text-green-500 border border-green-900 mt-6 text-xs">
+            DESLIGAR MODS
+        </button>
     </div>
 
     <script>
-        function logar() {
-            if(document.getElementById('k').value === "MATRIX-2024") {
-                document.getElementById('login').classList.add('hidden');
-                document.getElementById('painel').classList.remove('hidden');
-            } else { alert("KEY ERRADA!"); }
+        // Matrix Rain
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, drops;
+
+        function init() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            drops = new Array(Math.floor(width / 20)).fill(1);
         }
 
-        // ESTA FUNÇÃO FALA COM O SKETCHWARE
-        function enviarComando(funcao, status) {
-            if (window.Android) {
-                window.Android.fazerAcao(funcao, status);
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = '#0F0';
+            ctx.font = '15px monospace';
+            drops.forEach((y, i) => {
+                const char = String.fromCharCode(0x30A0 + Math.random() * 96);
+                ctx.fillText(char, i * 20, y * 20);
+                if (y * 20 > height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }
+        window.addEventListener('resize', init);
+        init();
+        setInterval(draw, 50);
+
+        // Lógica do Painel
+        function validaKey() {
+            const input = document.getElementById('keyInput').value;
+            const msg = document.getElementById('msg');
+            const login = document.getElementById('loginSection');
+            const menu = document.getElementById('menuSection');
+
+            if (input === "MATRIX-2024") {
+                msg.innerText = "SESSÃO INICIADA...";
+                msg.style.color = "#00ff41";
+                setTimeout(() => {
+                    login.classList.add('hidden-panel');
+                    menu.classList.remove('hidden-panel');
+                }, 1000);
+            } else {
+                msg.innerText = "KEY INVÁLIDA!";
+                msg.style.color = "#ff003c";
+                shake(login);
             }
+        }
+
+        function shake(el) {
+            el.animate([
+                { transform: 'translateX(0)' },
+                { transform: 'translateX(-10px)' },
+                { transform: 'translateX(10px)' },
+                { transform: 'translateX(0)' }
+            ], { duration: 200, iterations: 2 });
         }
     </script>
 </body>
 </html>
+
