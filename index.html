@@ -22,9 +22,9 @@
         button {
             background: #00FF00; color: black; border: none; padding: 12px;
             margin-top: 25px; cursor: pointer; font-weight: bold; width: 100%;
-            text-transform: uppercase; border-radius: 5px;
+            text-transform: uppercase; border-radius: 5px; transition: 0.3s;
         }
-        button:hover { background: #004400; color: white; box-shadow: 0 0 15px #00FF00; }
+        button:hover { background: #004400; color: white; }
     </style>
 </head>
 <body>
@@ -34,7 +34,7 @@
         <p style="font-size: 0.7rem;">SISTEMA DE AUTENTICAÇÃO</p>
         <input type="text" id="keyInput" placeholder="COLE SUA KEY AQUI">
         <br>
-        <button type="button" onclick="checkKey(event)">ENTRAR NO MOD</button>
+        <button type="button" id="btnLogar">LOGAR NO MOD</button>
     </div>
 
     <script>
@@ -60,16 +60,18 @@
         }
         setInterval(draw, 35);
 
-        function checkKey(e) {
-            e.preventDefault(); // TRAVA A PÁGINA PARA A KEY NÃO SUMIR
+        // Lógica de clique corrigida
+        document.getElementById('btnLogar').addEventListener('click', function(e) {
+            e.preventDefault(); 
             const key = document.getElementById('keyInput').value.trim();
+            
             if (key === "NEXUS-2026-VIP") {
-                // Link completo para evitar erro 404
-                window.location.href = "https://popovidismarcoantonionista-lang.github.io/NEXUS-XITER-VIP/sucesso.login.html";
+                // Redireciona para o link direto
+                window.location.assign("https://popovidismarcoantonionista-lang.github.io/NEXUS-XITER-VIP/sucesso.login.html");
             } else {
                 alert("KEY INVÁLIDA!");
             }
-        }
+        });
     </script>
 </body>
 </html>
