@@ -1,67 +1,67 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS VIP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <style>
-        body { background-color: black; margin: 0; overflow: hidden; font-family: sans-serif; }
-        canvas { display: block; position: absolute; top: 0; left: 0; }
-        .login-box {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0, 20, 0, 0.95); padding: 30px; border: 2px solid #00FF00;
-            text-align: center; color: #00FF00; box-shadow: 0 0 20px #00FF00; z-index: 10;
-            border-radius: 15px; width: 280px;
+        body { background: rgba(0,0,0,0.8); color: #00ff41; font-family: monospace; padding: 15px; }
+        .mod-item { 
+            display: flex; justify-content: space-between; 
+            padding: 10px; border: 1px solid #004400; margin-bottom: 5px;
+            background: black; border-radius: 8px;
         }
-        input { 
-            background: black; border: 1px solid #00FF00; color: #00FF00; 
-            padding: 12px; margin-top: 15px; width: 90%; text-align: center;
-            outline: none; font-weight: bold; border-radius: 5px; font-size: 16px;
+        .btn-logar {
+            background: #00ff41; color: black; border: none; padding: 10px;
+            width: 100%; font-weight: bold; margin-top: 10px;
         }
-        .btn-link {
-            display: block; background: #00FF00; color: black; padding: 14px;
-            margin-top: 25px; text-decoration: none; font-weight: bold;
-            text-transform: uppercase; border-radius: 5px; cursor: pointer;
-        }
+        .hidden { display: none; }
+        /* Switch */
+        .switch { position: relative; width: 40px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 20px; }
+        input:checked + .slider { background-color: #00ff41; }
     </style>
 </head>
 <body>
-    <canvas id="matrix"></canvas>
-    <div class="login-box">
-        <h2 style="letter-spacing: 2px;">NEXUS XITER VIP</h2>
-        <input type="text" id="keyInput" placeholder="COLE SUA KEY AQUI">
-        <a href="javascript:void(0);" class="btn-link" onclick="validar()">LOGAR NO MOD</a>
+
+    <div id="login">
+        <h3>NEXUS INJECTOR</h3>
+        <input type="text" id="k" placeholder="KEY" style="width:80%; padding:8px; background:black; color:#0f0; border:1px solid #0f0;">
+        <button class="btn-logar" onclick="logar()">ENTRAR</button>
+    </div>
+
+    <div id="painel" class="hidden">
+        <h3>PAINEL FF VIP</h3>
+        
+        <div class="mod-item">
+            <span>AUTO HEADSHOT</span>
+            <label class="switch">
+                <input type="checkbox" onchange="enviarComando('headshot', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="mod-item">
+            <span>AIMLOCK</span>
+            <label class="switch">
+                <input type="checkbox" onchange="enviarComando('aimlock', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
     </div>
 
     <script>
-        // Matrix Effect
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const letters = "0101010101";
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-        function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#0F0'; ctx.font = fontSize + 'px arial';
-            for (let i = 0; i < drops.length; i++) {
-                const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
+        function logar() {
+            if(document.getElementById('k').value === "MATRIX-2024") {
+                document.getElementById('login').classList.add('hidden');
+                document.getElementById('painel').classList.remove('hidden');
+            } else { alert("KEY ERRADA!"); }
         }
-        setInterval(draw, 35);
 
-        function validar() {
-            const key = document.getElementById('keyInput').value.trim();
-            // AJUSTE: Verifique se a KEY aqui é EXATAMENTE a que você digita
-            if (key === "NEXUS-2026-VIP") {
-                // Redirecionamento forçado com link completo
-                window.location.replace("https://popovidismarcoantonionista-lang.github.io/NEXUS-XITER-VIP/sucesso.login.html");
-            } else {
-                alert("KEY INCORRETA!");
+        // ESTA FUNÇÃO FALA COM O SKETCHWARE
+        function enviarComando(funcao, status) {
+            if (window.Android) {
+                window.Android.fazerAcao(funcao, status);
             }
         }
     </script>
