@@ -5,172 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NEXUS VIP</title>
     <style>
-        /* CSS para o fundo Matrix Animado */
-        canvas#matrix {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: #000;
-        }
-
-        /* Reset básico e centralização perfeita */
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: 'Courier New', Courier, monospace; /* Fonte estilo terminal */
-            overflow: hidden;
-            color: #0f0; /* Verde neon */
-        }
-
-        /* O Painel Central (Estilo da Imagem) */
-        .auth-container {
-            width: 90%; /* Ocupa 90% da largura do celular */
-            max-width: 320px; /* Não deixa ficar gigante em tablets */
-            background-color: rgba(0, 0, 0, 0.9); /* Quase preto e translúcido */
-            border: 2px solid #0f0; /* Borda Verde */
-            border-radius: 20px; /* Bordas arredondadas */
-            padding: 30px 20px;
-            text-align: center;
-            /* Efeito de brilho neon na borda */
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.7), inset 0 0 10px rgba(0, 255, 0, 0.3);
-            box-sizing: border-box; /* Garante que padding não quebre a largura */
-        }
-
-        /* Título NEXUS VIP */
-        .title {
-            font-size: 24px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 0 0 10px 0;
-            /* Efeito de brilho neon no texto */
-            text-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
-        }
-
-        /* Subtítulo */
-        .subtitle {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
-            opacity: 0.8;
-        }
-
-        /* Campo de Texto (Input) */
-        .key-input {
-            width: 100%;
-            background: rgba(0, 20, 0, 0.5); /* Fundo verde escuro */
-            border: 1px solid #0f0; /* Borda verde fina */
-            border-radius: 8px;
-            padding: 12px;
-            color: #0f0;
-            font-family: inherit;
-            font-size: 14px;
-            text-align: center;
-            outline: none;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-        }
+        body { margin: 0; padding: 0; background: #000; overflow: hidden; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; }
         
-        .key-input::placeholder {
-            color: rgba(0, 255, 0, 0.5);
-            text-transform: uppercase;
+        .panel { 
+            width: 90%; max-width: 320px; background: rgba(0, 0, 0, 0.9); 
+            border: 2px solid #0f0; border-radius: 20px; padding: 25px; 
+            text-align: center; box-shadow: 0 0 20px #0f0; box-sizing: border-box;
         }
 
-        /* Botão LOGAR NO MOD */
-        .login-btn {
-            width: 100%;
-            background-color: #0f0; /* Verde Total */
-            border: none;
-            border-radius: 8px;
-            padding: 12px;
-            color: #000; /* Texto Preto */
-            font-family: inherit;
-            font-size: 16px;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px #0f0; /* Brilho neon no botão */
+        .title { color: #0f0; font-size: 26px; text-shadow: 0 0 10px #0f0; margin-bottom: 5px; }
+        .subtitle { color: #0f0; font-size: 10px; letter-spacing: 2px; opacity: 0.7; margin-bottom: 25px; }
+        
+        .key-input { 
+            width: 100%; background: rgba(0, 30, 0, 0.5); border: 1px solid #0f0; 
+            border-radius: 8px; padding: 12px; color: #0f0; outline: none; 
+            margin-bottom: 20px; box-sizing: border-box; text-align: center;
         }
 
-        .login-btn:active {
-            transform: scale(0.98);
-            box-shadow: 0 0 5px #0f0;
+        .btn { 
+            width: 100%; background: #0f0; border: none; border-radius: 8px; 
+            padding: 12px; color: #000; font-weight: bold; cursor: pointer; 
+            box-shadow: 0 0 10px #0f0; text-transform: uppercase;
         }
 
+        .hack-item { 
+            display: flex; justify-content: space-between; align-items: center; 
+            color: #0f0; margin: 15px 0; border-bottom: 1px solid rgba(0, 255, 0, 0.2); 
+            padding-bottom: 5px;
+        }
     </style>
 </head>
 <body>
+    <canvas id="m"></canvas>
 
-    <canvas id="matrix"></canvas>
-
-    <div class="auth-container">
+    <div id="login-ui" class="panel">
         <h1 class="title">NEXUS VIP</h1>
         <p class="subtitle">SISTEMA DE AUTENTICAÇÃO</p>
-        
         <input type="text" id="key" class="key-input" placeholder="COLE SUA KEY AQUI">
+        <button class="btn" onclick="auth()">LOGAR NO MOD</button>
+    </div>
+
+    <div id="mod-ui" class="panel" style="display: none; border-color: #0ff; box-shadow: 0 0 20px #0ff;">
+        <h1 class="title" style="color: #0ff; text-shadow: 0 0 10px #0ff;">FUNÇÕES OB53</h1>
         
-        <button class="login-btn" onclick="checkKey()">LOGAR NO MOD</button>
+        <div class="hack-item">
+            <span>AIMBOT 100%</span>
+            <input type="checkbox" onclick="Android.applyPatch('AIMBOT', '0x2B4A1C', '0000A0E3')">
+        </div>
+        <div class="hack-item">
+            <span>ANTENA HEAD</span>
+            <input type="checkbox" onclick="Android.applyPatch('ANTENA', '0x1A2B3C', '0100A0E3')">
+        </div>
+
+        <button class="btn" style="background:#0ff; box-shadow: 0 0 10px #0ff; margin-top:20px;" onclick="Android.abrirJogo()">ABRIR FREE FIRE</button>
     </div>
 
     <script>
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-
-        canvas.height = window.innerHeight;
-        canvas.width = window.innerWidth;
-
-        // Caracteres Matrix (Mistura de Katakana e Números)
-        const characters = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789";
-        const charArray = characters.split('');
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = [];
-
-        for (let x = 0; x < columns; x++) drops[x] = 1;
-
-        function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = '#0f0';
-            ctx.font = fontSize + 'px Courier New';
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = charArray[Math.floor(Math.random() * charArray.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
+        // Lógica Matrix
+        const c = document.getElementById('m'), q = c.getContext('2d');
+        c.width = window.innerWidth; c.height = window.innerHeight;
+        const s = Array(256).fill(0);
+        function d() {
+            q.fillStyle = 'rgba(0,0,0,.05)'; q.fillRect(0,0,c.width,c.height);
+            q.fillStyle = '#0F0';
+            s.forEach((y, i) => {
+                q.fillText(String.fromCharCode(33+Math.random()*94), i*10, y);
+                s[i] = y > 758 + Math.random()*1e4 ? 0 : y + 10;
+            });
         }
-        setInterval(draw, 35);
-    </script>
+        setInterval(d, 33);
 
-    <script>
-        function checkKey() {
-            const keyInput = document.getElementById('key').value;
-            // Key de teste para desenvolvedor
-            const correctKey = "NEXUS-2026";
-
-            if (keyInput === correctKey) {
-                // Sucesso: Avisa o Java para abrir o Mod Menu real
-                Android.loginSucesso();
-            } else {
-                alert("KEY INCORRETA OU EXPIRADA!");
-            }
+        // Lógica Login
+        function auth() {
+            if(document.getElementById('key').value === "NEXUS-2026") {
+                document.getElementById('login-ui').style.display = 'none';
+                document.getElementById('mod-ui').style.display = 'block';
+            } else { alert("KEY INVÁLIDA!"); }
         }
     </script>
-
 </body>
 </html>
