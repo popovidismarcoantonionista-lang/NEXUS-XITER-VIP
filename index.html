@@ -3,80 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS VIP</title>
+    <title>NEXUS VIP OB53</title>
     <style>
-        body { margin: 0; padding: 0; background: #000; overflow: hidden; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        canvas { position: fixed; top: 0; left: 0; z-index: -1; }
-        .panel { 
-            width: 90%; max-width: 320px; background: rgba(0, 0, 0, 0.9); 
-            border: 2px solid #0f0; border-radius: 20px; padding: 25px; 
-            text-align: center; box-shadow: 0 0 20px #0f0; box-sizing: border-box;
+        /* CSS para o fundo Matrix Animado */
+        canvas#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; }
+
+        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Courier New', monospace; overflow: hidden; color: #0f0; }
+
+        /* Estilo unificado para os Painéis (Auth e Mod) */
+        .panel-container {
+            width: 90%; max-width: 320px;
+            background-color: rgba(0, 0, 0, 0.95);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            box-sizing: border-box;
+            transition: all 0.5s ease-in-out;
+            position: absolute; /* Para transição suave */
         }
-        .title { color: #0f0; font-size: 26px; text-shadow: 0 0 10px #0f0; margin-bottom: 5px; }
-        .subtitle { color: #0f0; font-size: 10px; letter-spacing: 2px; opacity: 0.7; margin-bottom: 25px; }
-        .key-input { 
-            width: 100%; background: rgba(0, 30, 0, 0.5); border: 1px solid #0f0; 
-            border-radius: 8px; padding: 12px; color: #0f0; outline: none; 
-            margin-bottom: 20px; box-sizing: border-box; text-align: center;
+
+        /* Estilo VERDE (Auth) */
+        #auth-panel {
+            border: 2px solid #0f0;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
         }
-        .btn { 
-            width: 100%; background: #0f0; border: none; border-radius: 8px; 
-            padding: 12px; color: #000; font-weight: bold; cursor: pointer; 
-            box-shadow: 0 0 10px #0f0; text-transform: uppercase;
+
+        /* Estilo CIANO (Mod - IDÊNTICO À NOVA IMAGEM) */
+        #mod-panel {
+            border: 2px solid #0ff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            display: none; /* Escondido inicialmente */
         }
-        .hack-item { display: flex; justify-content: space-between; align-items: center; color: #0f0; margin: 15px 0; border-bottom: 1px solid rgba(0, 255, 0, 0.2); padding-bottom: 5px; }
+
+        /* Títulos */
+        .title-green { font-size: 24px; font-weight: bold; text-shadow: 0 0 10px #0f0; margin: 0 0 30px 0; }
+        .title-cyan { font-size: 24px; font-weight: bold; text-shadow: 0 0 15px #0ff; color: #0ff; margin: 0 0 30px 0; }
+
+        /* Campo de Texto (Auth) */
+        .key-input {
+            width: 100%; background: rgba(0, 20, 0, 0.5); border: 1px solid #0f0;
+            border-radius: 8px; padding: 12px; color: #0f0; font-family: inherit;
+            text-align: center; outline: none; margin-bottom: 20px; box-sizing: border-box;
+        }
+
+        /* Botões */
+        .btn-green {
+            width: 100%; background-color: #0f0; border: none; border-radius: 8px;
+            padding: 12px; color: #000; font-family: inherit; font-weight: bold;
+            cursor: pointer; box-shadow: 0 0 10px #0f0; text-transform: uppercase;
+        }
+
+        .btn-cyan {
+            width: 100%; background-color: #0ff; border: none; border-radius: 8px;
+            padding: 14px; color: #000; font-family: inherit; font-weight: bold;
+            font-size: 16px; cursor: pointer; box-shadow: 0 0 20px #0ff;
+            text-transform: uppercase; margin-top: 20px;
+        }
+
+        /* --- NOVO LAYOUT DAS FUNÇÕES --- */
+        .functions-list { text-align: left; margin-bottom: 10px; width: 100%; }
+
+        .function-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 5px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.15); /* Linha divisória sutil */
+        }
+
+        .function-name {
+            color: #0f0; /* Nome em Verde (Estilo Termina) */
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Switch Neon (Substituindo o Checkbox feio) */
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333; border: 1px solid rgba(0, 255, 255, 0.3);
+            transition: .4s; border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 2px;
+            background-color: white; transition: .4s; border-radius: 50%;
+            box-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+
+        input:checked + .slider { background-color: rgba(0, 255, 255, 0.2); border-color: #0ff; }
+        input:checked + .slider:before { transform: translateX(20px); background-color: #0ff; box-shadow: 0 0 10px #0ff; }
+
     </style>
 </head>
 <body>
-    <canvas id="m"></canvas>
 
-    <div id="login-ui" class="panel">
-        <h1 class="title">NEXUS VIP</h1>
-        <p class="subtitle">SISTEMA DE AUTENTICAÇÃO</p>
+    <canvas id="matrix"></canvas>
+
+    <div id="auth-panel" class="panel-container">
+        <h1 class="title-green">NEXUS VIP</h1>
         <input type="text" id="key" class="key-input" placeholder="COLE SUA KEY AQUI">
-        <button class="btn" onclick="auth()">LOGAR NO MOD</button>
+        <button class="btn-green" onclick="checkKey()">LOGAR NO MOD</button>
     </div>
 
-    <div id="mod-ui" class="panel" style="display: none; border-color: #0ff; box-shadow: 0 0 20px #0ff;">
-        <h1 class="title" style="color: #0ff; text-shadow: 0 0 10px #0ff;">FUNÇÕES OB53</h1>
+    <div id="mod-panel" class="panel-container">
+        <h1 class="title-cyan">FUNÇÕES OB53</h1>
         
-        <div class="hack-item">
-            <span>AIMBOT 100%</span>
-            <input type="checkbox" onclick="try{Android.applyPatch('AIMBOT', '0x2B4A1C', '0000A0E3')}catch(e){console.log(e)}">
-        </div>
-        <div class="hack-item">
-            <span>ANTENA HEAD</span>
-            <input type="checkbox" onclick="try{Android.applyPatch('ANTENA', '0x1A2B3C', '0100A0E3')}catch(e){console.log(e)}">
+        <div class="functions-list">
+            <div class="function-item">
+                <span class="function-name">AIMBOT 100%</span>
+                <label class="switch">
+                    <input type="checkbox" onclick="Android.applyPatch('AIMBOT 100%', '0x2B4A1C', '0000A0E3')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="function-item">
+                <span class="function-name">ANTENA HEAD</span>
+                <label class="switch">
+                    <input type="checkbox" onclick="Android.applyPatch('ANTENA HEAD', '0x1A2B3C', '0100A0E3')">
+                    <span class="slider"></span>
+                </label>
+            </div>
         </div>
 
-        <button class="btn" style="background:#0ff; box-shadow: 0 0 10px #0ff; margin-top:20px;" onclick="try{Android.abrirJogo()}catch(e){alert('Abrindo Jogo...')}">ABRIR FREE FIRE</button>
+        <button class="btn-cyan" onclick="Android.abrirJogo()">ABRIR FREE FIRE</button>
     </div>
 
     <script>
-        // Fundo Matrix
-        const c = document.getElementById('m'), q = c.getContext('2d');
-        c.width = window.innerWidth; c.height = window.innerHeight;
-        const s = Array(256).fill(0);
+        // Script Fundo Matrix
+        const c = document.getElementById('matrix'), ctx = c.getContext('2d');
+        c.height = window.innerHeight; c.width = window.innerWidth;
+        const char = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピ0123456789".split('');
+        const fontSize = 14, columns = c.width / fontSize, drops = [];
+        for (let x = 0; x < columns; x++) drops[x] = 1;
         function d() {
-            q.fillStyle = 'rgba(0,0,0,.05)'; q.fillRect(0,0,c.width,c.height);
-            q.fillStyle = '#0F0';
-            s.forEach((y, i) => {
-                q.fillText(String.fromCharCode(33+Math.random()*94), i*10, y);
-                s[i] = y > 758 + Math.random()*1e4 ? 0 : y + 10;
-            });
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; ctx.fillRect(0, 0, c.width, c.height);
+            ctx.fillStyle = '#0f0'; ctx.font = fontSize + 'px Courier New';
+            for (let i = 0; i < drops.length; i++) {
+                const text = char[Math.floor(Math.random() * char.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
         }
-        setInterval(d, 33);
+        setInterval(d, 35);
 
-        // FUNÇÃO DE LOGIN CORRIGIDA
-        function auth() {
-            const input = document.getElementById('key').value.trim();
-            const login = document.getElementById('login-ui');
-            const mod = document.getElementById('mod-ui');
-
-            // Verifica se a Key é NEXUS (Maiúsculas)
-            if(input === "NEXUS") {
-                login.style.display = 'none';
-                mod.style.display = 'block';
+        // Lógica de Transição (Login -> Mod)
+        function checkKey() {
+            const keyInput = document.getElementById('key').value.trim();
+            if (keyInput === "NEXUS") { // DEFINA SUA KEY AQUI
+                document.getElementById('auth-panel').style.display = 'none';
+                document.getElementById('mod-panel').style.display = 'block';
             } else {
                 alert("KEY INCORRETA!");
             }
