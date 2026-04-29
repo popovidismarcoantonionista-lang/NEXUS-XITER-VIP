@@ -1,191 +1,116 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEXUS XITER VIP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --neon: #00ff41; --bg: #0a0a0a; --shadow: rgba(0, 255, 65, 0.2); }
-        
-        body {
-            background-color: var(--bg);
-            color: var(--neon);
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            padding: 10px;
-            user-select: none;
-            overflow-x: hidden;
-        }
-
-        .header {
-            text-align: center;
-            border-bottom: 2px solid var(--neon);
-            margin-bottom: 15px;
-            padding-bottom: 5px;
-            text-shadow: 0 0 10px var(--neon);
-        }
-
-        .category {
-            border: 1px solid var(--neon);
-            margin-bottom: 10px;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.5);
-            box-shadow: inset 0 0 5px var(--shadow);
-        }
-
-        .category-title {
-            font-size: 0.8em;
-            font-weight: bold;
-            margin-bottom: 8px;
-            display: block;
-            text-transform: uppercase;
-            background: var(--neon);
-            color: black;
-            padding: 2px 5px;
-            width: fit-content;
-        }
-
-        .menu-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            font-size: 0.9em;
-        }
-
-        /* Switch Customizado Matrix */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 34px;
-            height: 18px;
-        }
-
+        :root { --neon-green: #00ff00; --dark-bg: #000000; }
+        body { margin: 0; background: var(--dark-bg); color: var(--neon-green); font-family: 'Fira Code', monospace; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        #matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.5; }
+        .nexus-panel { background: rgba(0, 0, 0, 0.95); border: 2px solid var(--neon-green); box-shadow: 0 0 25px var(--neon-green), inset 0 0 10px var(--neon-green); padding: 2.5rem 2rem; border-radius: 25px; width: 90%; max-width: 380px; text-align: center; position: relative; z-index: 100; }
+        .hidden-panel { display: none; }
+        .nexus-title { font-size: 1.8rem; font-weight: 700; letter-spacing: 5px; text-shadow: 0 0 15px var(--neon-green); margin-bottom: 0.5rem; }
+        .nexus-subtitle { font-size: 0.75rem; letter-spacing: 3px; opacity: 0.8; margin-bottom: 2rem; }
+        .nexus-input { background: #000; border: 1px solid var(--neon-green); color: #fff; width: 100%; padding: 15px; text-align: center; font-size: 0.9rem; margin-bottom: 1.5rem; outline: none; text-transform: uppercase; }
+        .nexus-btn { background: var(--neon-green); color: #000; width: 100%; padding: 15px; font-weight: 900; font-size: 1rem; text-transform: uppercase; border: none; cursor: pointer; transition: 0.3s; box-shadow: 0 0 15px var(--neon-green); }
+        .mod-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(0, 255, 0, 0.05); margin-bottom: 8px; border-radius: 8px; border: 1px solid rgba(0, 255, 0, 0.2); }
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #222;
-            border: 1px solid var(--neon);
-            transition: .4s;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 12px; width: 12px;
-            left: 2px; bottom: 2px;
-            background-color: var(--neon);
-            transition: .4s;
-        }
-
-        input:checked + .slider { background-color: var(--shadow); }
-        input:checked + .slider:before { transform: translateX(16px); box-shadow: 0 0 8px var(--neon); }
-
-        .footer {
-            font-size: 0.6em;
-            text-align: center;
-            margin-top: 10px;
-            opacity: 0.7;
-        }
-
-        #matrix-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            z-index: -1;
-            opacity: 0.15;
-        }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #111; transition: .4s; border-radius: 20px; border: 1px solid var(--neon-green); }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: var(--neon-green); transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--neon-green); }
+        input:checked + .slider:before { transform: translateX(20px); background-color: #000; }
+        #msg { height: 20px; margin-top: 10px; font-size: 0.75rem; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<canvas id="matrix-canvas"></canvas>
+    <canvas id="matrix-canvas"></canvas>
 
-<div class="header">
-    <div style="font-size: 1.2em; font-weight: bold;">NEXUS XITER VIP</div>
-    <div style="font-size: 0.7em;">USER: ADMIN | EXPIRES: 2026-12-31</div>
-</div>
-
-<div class="category">
-    <span class="category-title">Combate Assist</span>
-    <div class="menu-item">
-        <span>Aimbot 360°</span>
-        <label class="switch"><input type="checkbox" onchange="toggleHack('aim', '0x5ff5a84', '200080D2C0035FD6', this)"><span class="slider"></span></label>
+    <div id="loginSection" class="nexus-panel">
+        <h1 class="nexus-title">NEXUS XITER</h1>
+        <p class="nexus-subtitle text-green-500">AUTENTICAÇÃO REQUERIDA</p>
+        <input type="password" id="keyInput" placeholder="COLE SUA KEY" class="nexus-input">
+        <button onclick="validaKey()" class="nexus-btn">ENTRAR NO SISTEMA</button>
+        <p id="msg"></p>
     </div>
-    <div class="menu-item">
-        <span>No Recoil</span>
-        <label class="switch"><input type="checkbox" onchange="toggleHack('recoil', '0x51da704', '00000000', this)"><span class="slider"></span></label>
+
+    <div id="menuSection" class="nexus-panel hidden-panel">
+        <h1 class="nexus-title" style="font-size: 1.4rem;">NEXUS VIP</h1>
+        <button onclick="abrirJogo()" class="mb-4 text-[10px] border border-green-500 p-1 w-full hover:bg-green-500 hover:text-black">INICIAR FREE FIRE</button>
+
+        <div class="space-y-2 text-left">
+            <div class="mod-item">
+                <span class="text-xs font-bold">AUTO HEADSHOT</span>
+                <label class="switch">
+                    <input type="checkbox" onchange="toggleCheat('Aimbot', '0x3A5B12', '00 00 A0 E3', this)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="mod-item">
+                <span class="text-xs font-bold">ESP LINE (ANTENA)</span>
+                <label class="switch">
+                    <input type="checkbox" onchange="toggleCheat('EspLine', '0x4B2C34', '01 00 A0 E3', this)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="mod-item">
+                <span class="text-xs font-bold">WALLHACK (V1)</span>
+                <label class="switch">
+                    <input type="checkbox" onchange="toggleCheat('Wallhack', '0x1A2B3C', '0F 00 A0 E1', this)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <button onclick="Android.fecharMenu()" class="nexus-btn mt-6" style="background: transparent; border: 1px solid #ff0000; color: #ff0000; font-size: 0.7rem; padding: 10px; box-shadow: none;">
+            FECHAR MOD MENU
+        </button>
     </div>
-</div>
 
-<div class="category">
-    <span class="category-title">Movement Hack</span>
-    <div class="menu-item">
-        <span>Fly Hack (Voo)</span>
-        <label class="switch"><input type="checkbox" onchange="toggleHack('fly', '0x5ff5a3c', '00000000', this)"><span class="slider"></span></label>
-    </div>
-    <div class="menu-item">
-        <span>Speed Flash</span>
-        <label class="switch"><input type="checkbox" onchange="toggleHack('speed', '0x5ff5a1c', '0000C842', this)"><span class="slider"></span></label>
-    </div>
-</div>
+    <script>
+        // Matrix Rain (Simplificado)
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, drops;
+        function init() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; drops = new Array(Math.floor(width / 18)).fill(1); }
+        function draw() { ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; ctx.fillRect(0, 0, width, height); ctx.fillStyle = '#0F0'; ctx.font = '15px monospace'; drops.forEach((y, i) => { const char = String.fromCharCode(0x30A0 + Math.random() * 96); ctx.fillText(char, i * 18, y * 18); if (y * 18 > height && Math.random() > 0.975) drops[i] = 0; drops[i]++; }); }
+        window.addEventListener('resize', init);
+        init(); setInterval(draw, 50);
 
-<div class="category">
-    <span class="category-title">Visual & Interface</span>
-    <div class="menu-item">
-        <span>Antena 100%</span>
-        <label class="switch"><input type="checkbox" onchange="toggleHack('esp', '0x51d7294', 'C0035FD6', this)"><span class="slider"></span></label>
-    </div>
-    <div class="menu-item">
-        <span>Grão-Mestre Fake</span>
-        <label class="switch"><input type="checkbox" onchange="toggleHack('rank', '0x51d765c', '200080D2C0035FD6', this)"><span class="slider"></span></label>
-    </div>
-</div>
-
-<div class="footer">NEXUS SYSTEM V3.1 - ENCRYPTED CONNECTION</div>
-
-<script>
-    // Lógica Matrix Background
-    const canvas = document.getElementById('matrix-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    const fontSize = 10;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
-
-    function drawMatrix() {
-        ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "#0f0";
-        ctx.font = fontSize + "px arial";
-        for (let i = 0; i < drops.length; i++) {
-            const text = letters.charAt(Math.floor(Math.random() * letters.length));
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i]++;
-        }
-    }
-    setInterval(drawMatrix, 33);
-
-    // Ponte com o Android (Sketchware)
-    function toggleHack(tag, offset, patch, element) {
-        if (element.checked) {
-            // Se estiver usando Sketchware, chama a Interface JS
-            if (window.Android) {
-                window.Android.applyPatch(offset, patch);
+        // FUNÇÕES DA PONTE COM O JAVA (SKETCHWARE)
+        function toggleCheat(name, offset, hex, element) {
+            if (element.checked) {
+                // Chama a função no ModMenuService.java
+                if(window.Android) Android.applyPatch(name, offset, hex);
+            } else {
+                if(window.Android) Android.removePatch(offset);
             }
-            console.log("Ativado: " + tag + " no offset " + offset);
-        } else {
-            if (window.Android) {
-                window.Android.removePatch(offset);
-            }
-            console.log("Desativado: " + tag);
         }
-    }
-</script>
+
+        function abrirJogo() {
+            if(window.Android) Android.abrirJogo();
+        }
+
+        function validaKey() {
+            const input = document.getElementById('keyInput').value;
+            const msg = document.getElementById('msg');
+            // Chave Padrão
+            if (input === "NEXUS-2026") {
+                msg.innerText = "ACESSO LIBERADO!";
+                msg.style.color = "#00ff00";
+                setTimeout(() => {
+                    document.getElementById('loginSection').classList.add('hidden-panel');
+                    document.getElementById('menuSection').classList.remove('hidden-panel');
+                }, 800);
+            } else {
+                msg.innerText = "KEY INCORRETA!";
+                msg.style.color = "#ff0000";
+            }
+        }
+    </script>
 </body>
 </html>
