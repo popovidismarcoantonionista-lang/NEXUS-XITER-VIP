@@ -11,6 +11,8 @@
         :root {
             --neon-green: #00ff00;
             --dark-bg: #000000;
+            --panel-bg: rgba(0, 0, 0, 0.9);
+            --item-bg: rgba(0, 255, 0, 0.05);
         }
 
         body {
@@ -32,164 +34,226 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.5;
+            opacity: 0.4;
         }
 
-        /* Estilo idêntico à imagem enviada */
+        /* Content Wrapper */
+        .main-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            perspective: 1000px;
+        }
+
+        /* Estilo do Painel */
         .nexus-panel {
-            background: rgba(0, 0, 0, 0.95);
+            background: var(--panel-bg);
             border: 2px solid var(--neon-green);
-            box-shadow: 0 0 25px var(--neon-green), inset 0 0 10px var(--neon-green);
-            padding: 2.5rem 2rem;
-            border-radius: 25px;
-            width: 90%;
-            max-width: 380px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3), inset 0 0 15px rgba(0, 255, 0, 0.1);
+            padding: 40px 30px;
+            border-radius: 30px;
             text-align: center;
-            position: relative;
-            z-index: 100;
+            backdrop-filter: blur(10px);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .hidden-panel { display: none; }
+        .hidden-panel {
+            display: none;
+            opacity: 0;
+            transform: scale(0.9) rotateX(-10deg);
+        }
 
+        /* Tipografia */
         .nexus-title {
-            font-size: 1.8rem;
+            font-size: 1.75rem;
             font-weight: 700;
-            letter-spacing: 5px;
-            text-shadow: 0 0 15px var(--neon-green);
-            margin-bottom: 0.5rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px var(--neon-green);
+            margin-bottom: 8px;
         }
 
         .nexus-subtitle {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             letter-spacing: 3px;
-            opacity: 0.8;
-            margin-bottom: 2rem;
+            color: var(--neon-green);
+            opacity: 0.7;
+            text-transform: uppercase;
+            margin-bottom: 35px;
         }
 
-        /* Input de Key */
+        /* Inputs */
+        .nexus-input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
         .nexus-input {
-            background: #000;
-            border: 1px solid var(--neon-green);
+            background: rgba(0, 20, 0, 0.5);
+            border: 1px solid rgba(0, 255, 0, 0.3);
             color: #fff;
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             text-align: center;
             font-size: 0.9rem;
-            margin-bottom: 1.5rem;
+            border-radius: 8px;
             outline: none;
-            text-transform: uppercase;
+            transition: 0.3s;
         }
 
-        .nexus-input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.8rem;
+        .nexus-input:focus {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+            background: rgba(0, 30, 0, 0.7);
         }
 
-        /* Botão de Logar */
+        /* Botões */
         .nexus-btn {
             background: var(--neon-green);
             color: #000;
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             font-weight: 900;
             font-size: 1rem;
             text-transform: uppercase;
+            letter-spacing: 2px;
             border: none;
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 0 15px var(--neon-green);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.4);
         }
 
         .nexus-btn:hover {
             background: #fff;
             box-shadow: 0 0 25px #fff;
-            transform: scale(1.02);
+            transform: translateY(-2px);
         }
 
-        /* Mod Menu Items */
+        .nexus-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Itens do Menu */
+        .menu-items-container {
+            text-align: left;
+            margin-top: 20px;
+        }
+
         .mod-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
-            background: rgba(0, 255, 0, 0.05);
-            margin-bottom: 8px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 255, 0, 0.2);
+            padding: 14px 18px;
+            background: var(--item-bg);
+            margin-bottom: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 255, 0, 0.1);
+            transition: 0.2s;
         }
 
-        /* Switch do Menu */
+        .mod-item:hover {
+            border-color: rgba(0, 255, 0, 0.5);
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .mod-name {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Switch */
         .switch {
             position: relative;
             display: inline-block;
-            width: 40px;
-            height: 20px;
+            width: 44px;
+            height: 22px;
         }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider {
             position: absolute; cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #111; transition: .4s;
-            border-radius: 20px; border: 1px solid var(--neon-green);
+            background-color: #1a1a1a; transition: .4s;
+            border-radius: 34px; border: 1px solid rgba(0, 255, 0, 0.3);
         }
         .slider:before {
             position: absolute; content: "";
-            height: 14px; width: 14px; left: 2px; bottom: 2px;
+            height: 16px; width: 16px; left: 2px; bottom: 2px;
             background-color: var(--neon-green); transition: .4s; border-radius: 50%;
         }
-        input:checked + .slider { background-color: var(--neon-green); }
-        input:checked + .slider:before { transform: translateX(20px); background-color: #000; }
+        input:checked + .slider { background-color: var(--neon-green); border-color: var(--neon-green); }
+        input:checked + .slider:before { transform: translateX(22px); background-color: #000; }
 
-        #msg { height: 20px; margin-top: 10px; font-size: 0.75rem; font-weight: bold; }
+        #msg { 
+            height: 24px; 
+            margin-top: 20px; 
+            font-size: 0.7rem; 
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .footer-link {
+            margin-top: 30px;
+            font-size: 0.6rem;
+            text-decoration: underline;
+            opacity: 0.4;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .footer-link:hover { opacity: 1; }
     </style>
 </head>
 <body>
 
     <canvas id="matrix-canvas"></canvas>
 
-    <!-- Painel de Login (Baseado na imagem) -->
-    <div id="loginSection" class="nexus-panel">
-        <h1 class="nexus-title">NEXUS XITER VIP</h1>
-        <p class="nexus-subtitle text-green-500">SISTEMA DE AUTENTICAÇÃO</p>
-        
-        <input type="password" id="keyInput" placeholder="COLE SUA KEY" autocomplete="off" class="nexus-input">
-        
-        <button onclick="validaKey()" class="nexus-btn">LOGAR NO MOD</button>
-        
-        <p id="msg"></p>
-    </div>
-
-    <!-- Mod Menu (Aparece após a Key) -->
-    <div id="menuSection" class="nexus-panel hidden-panel">
-        <h1 class="nexus-title" style="font-size: 1.4rem;">MENU ATIVO</h1>
-        <p class="nexus-subtitle mb-4">FUNÇÕES DISPONÍVEIS</p>
-
-        <div class="space-y-2 text-left">
-            <div class="mod-item">
-                <span class="text-xs font-bold">AUTO HEADSHOT</span>
-                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+    <div class="main-container">
+        <!-- Painel de Login -->
+        <div id="loginSection" class="nexus-panel">
+            <h1 class="nexus-title">NEXUS VIP</h1>
+            <p class="nexus-subtitle">Sistema de Autenticação</p>
+            
+            <div class="nexus-input-group">
+                <input type="password" id="keyInput" placeholder="COLE SUA KEY AQUI" autocomplete="off" class="nexus-input">
             </div>
-            <div class="mod-item">
-                <span class="text-xs font-bold">AIMLOCK</span>
-                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-            </div>
-            <div class="mod-item">
-                <span class="text-xs font-bold">ESP LINE (ANTENA)</span>
-                <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
-            </div>
-            <div class="mod-item">
-                <span class="text-xs font-bold">WALLHACK</span>
-                <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-            </div>
+            
+            <button onclick="validaKey()" class="nexus-btn">LOGAR NO MOD</button>
+            
+            <p id="msg"></p>
         </div>
 
-        <button onclick="location.reload()" class="nexus-btn mt-6" style="background: transparent; border: 1px solid var(--neon-green); color: var(--neon-green); font-size: 0.7rem; padding: 10px;">
-            SAIR DO SISTEMA
-        </button>
+        <!-- Mod Menu -->
+        <div id="menuSection" class="nexus-panel hidden-panel">
+            <h1 class="nexus-title" style="font-size: 1.4rem;">PAINEL ATIVO</h1>
+            <p class="nexus-subtitle">Funções Elite Liberadas</p>
+
+            <div class="menu-items-container">
+                <div class="mod-item">
+                    <span class="mod-name">AUTO HEADSHOT</span>
+                    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                </div>
+                <div class="mod-item">
+                    <span class="mod-name">AIMLOCK</span>
+                    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                </div>
+                <div class="mod-item">
+                    <span class="mod-name">ESP LINE (ANTENA)</span>
+                    <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <div class="mod-item">
+                    <span class="mod-name">WALLHACK (V2)</span>
+                    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                </div>
+            </div>
+
+            <button onclick="location.reload()" class="footer-link">ENCERRAR SESSÃO SEGURA</button>
+        </div>
     </div>
 
     <script>
-        // Matrix Rain
+        // Matrix Background
         const canvas = document.getElementById('matrix-canvas');
         const ctx = canvas.getContext('2d');
         let width, height, drops;
@@ -197,18 +261,18 @@
         function init() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
-            drops = new Array(Math.floor(width / 18)).fill(1);
+            drops = new Array(Math.floor(width / 20)).fill(1);
         }
 
         function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
             ctx.fillRect(0, 0, width, height);
-            ctx.fillStyle = '#0F0';
-            ctx.font = '15px monospace';
+            ctx.fillStyle = '#00ff00';
+            ctx.font = '14px monospace';
             drops.forEach((y, i) => {
                 const char = String.fromCharCode(0x30A0 + Math.random() * 96);
-                ctx.fillText(char, i * 18, y * 18);
-                if (y * 18 > height && Math.random() > 0.975) drops[i] = 0;
+                ctx.fillText(char, i * 20, y * 20);
+                if (y * 20 > height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             });
         }
@@ -216,25 +280,33 @@
         init();
         setInterval(draw, 50);
 
-        // Lógica de Autenticação
+        // Lógica
         function validaKey() {
             const input = document.getElementById('keyInput').value;
             const msg = document.getElementById('msg');
             const login = document.getElementById('loginSection');
             const menu = document.getElementById('menuSection');
 
-            // CHAVE DE ACESSO
-            if (input === "MATRIX-2024") {
-                msg.innerText = "AUTENTICADO COM SUCESSO!";
-                msg.style.color = "#00ff00";
+            if (input.trim() === "MATRIX-2024") {
+                msg.innerText = "ACESSO CONCEDIDO...";
+                msg.style.color = "var(--neon-green)";
                 
                 setTimeout(() => {
-                    login.classList.add('hidden-panel');
-                    menu.classList.remove('hidden-panel');
+                    login.style.opacity = "0";
+                    login.style.transform = "scale(0.9) translateY(20px)";
+                    
+                    setTimeout(() => {
+                        login.style.display = "none";
+                        menu.style.display = "block";
+                        // Forçar reflow para animação
+                        void menu.offsetWidth;
+                        menu.style.opacity = "1";
+                        menu.style.transform = "scale(1) translateY(0)";
+                    }, 500);
                 }, 800);
             } else {
-                msg.innerText = "KEY INVÁLIDA OU EXPIRADA!";
-                msg.style.color = "#ff0000";
+                msg.innerText = "ERRO: KEY INVÁLIDA";
+                msg.style.color = "#ff3333";
                 shake(login);
             }
         }
@@ -242,8 +314,8 @@
         function shake(el) {
             el.animate([
                 { transform: 'translateX(0)' },
-                { transform: 'translateX(-10px)' },
-                { transform: 'translateX(10px)' },
+                { transform: 'translateX(-8px)' },
+                { transform: 'translateX(8px)' },
                 { transform: 'translateX(0)' }
             ], { duration: 150, iterations: 2 });
         }
