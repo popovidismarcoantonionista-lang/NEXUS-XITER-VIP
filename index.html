@@ -58,7 +58,7 @@
         <div class="item">
             <span class="name">AimLock Camera</span>
             <label class="switch">
-                <input type="checkbox" onclick="Android.applyPatch('AimLock', '0x336371c', '0000A0E3')">
+                <input type="checkbox" onclick="safePatch('AimLock', '0x336371c', '0000A0E3')">
                 <span class="slider"></span>
             </label>
         </div>
@@ -67,14 +67,14 @@
         <div class="item">
             <span class="name">Speed Shoot/Move</span>
             <label class="switch">
-                <input type="checkbox" onclick="Android.applyPatch('SpeedMove', '0x68a10dc', '0000A0E3')">
+                <input type="checkbox" onclick="safePatch('SpeedMove', '0x68a10dc', '0000A0E3')">
                 <span class="slider"></span>
             </label>
         </div>
         <div class="item">
             <span class="name">SkyDive Speed</span>
             <label class="switch">
-                <input type="checkbox" onclick="Android.applyPatch('FlySky', '0x6ef16e8', '0000A0E3')">
+                <input type="checkbox" onclick="safePatch('FlySky', '0x6ef16e8', '0000A0E3')">
                 <span class="slider"></span>
             </label>
         </div>
@@ -83,19 +83,19 @@
         <div class="item">
             <span class="name">Field of View (FOV)</span>
             <label class="switch">
-                <input type="checkbox" onclick="Android.applyPatch('FOV', '0x3357530', '0000A0E3')">
+                <input type="checkbox" onclick="safePatch('FOV', '0x3357530', '0000A0E3')">
                 <span class="slider"></span>
             </label>
         </div>
         <div class="item">
             <span class="name">Chams Color (OnRender)</span>
             <label class="switch">
-                <input type="checkbox" onclick="Android.applyPatch('Chams', '0x33617dc', '0000A0E3')">
+                <input type="checkbox" onclick="safePatch('Chams', '0x33617dc', '0000A0E3')">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <button class="btn-c" onclick="Android.abrirJogo()">INICIAR FREE FIRE</button>
+        <button class="btn-c" onclick="safeLaunch()">INICIAR FREE FIRE</button>
     </div>
 
     <script>
@@ -117,13 +117,32 @@
         }
         setInterval(draw, 35);
 
-        // Login System
+        // LOGIN SYSTEM
         function login() {
             const pass = document.getElementById('key').value.trim().toUpperCase();
             if(pass === "NEXUS") {
                 document.getElementById('auth-ui').style.display = 'none';
                 document.getElementById('mod-ui').style.display = 'block';
-            } else { alert("KEY INCORRETA!"); }
+            } else { 
+                alert("KEY INCORRETA!"); 
+            }
+        }
+
+        // FUNÇÕES SEGURAS (Não travam se o Android não responder)
+        function safePatch(name, offset, hex) {
+            if (typeof Android !== "undefined" && Android.applyPatch) {
+                Android.applyPatch(name, offset, hex);
+            } else {
+                console.log("Interface Java não detectada.");
+            }
+        }
+
+        function safeLaunch() {
+            if (typeof Android !== "undefined" && Android.abrirJogo) {
+                Android.abrirJogo();
+            } else {
+                alert("Erro: Não foi possível iniciar o jogo pelo Java.");
+            }
         }
     </script>
 </body>
