@@ -2,205 +2,49 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS MOD MENU</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS PANEL</title>
     <style>
-        :root {
-            --neon-green: #00FF00;
-            --neon-blue: #00f7ff;
-            --bg-panel: rgba(0, 15, 0, 0.95);
-        }
+        :root { --blue: #00f7ff; --green: #00ff00; }
+        body { background: black; color: white; font-family: sans-serif; margin: 0; padding: 15px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 300px; border: 2px solid var(--blue); border-radius: 15px; padding: 20px; background: rgba(0,15,0,0.9); box-shadow: 0 0 15px var(--blue); }
+        h3 { color: var(--blue); text-align: center; margin-top: 0; text-shadow: 0 0 5px var(--blue); }
+        .cat { color: var(--green); font-size: 10px; border-bottom: 1px solid #222; margin: 15px 0 10px; text-transform: uppercase; }
+        .opt { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .opt span { font-size: 14px; }
+        
+        /* Checkbox Style */
+        input[type="checkbox"] { width: 40px; height: 20px; appearance: none; background: #333; border-radius: 10px; position: relative; cursor: pointer; transition: 0.3s; }
+        input[type="checkbox"]:checked { background: var(--blue); }
+        input[type="checkbox"]::before { content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
+        input[type="checkbox"]:checked::before { left: 22px; }
 
-        body { 
-            background-color: black; 
-            margin: 0; 
-            overflow: hidden; 
-            font-family: 'Courier New', monospace; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        canvas { position: absolute; top: 0; left: 0; z-index: 1; }
-
-        /* Painel Principal */
-        .mod-box {
-            position: relative;
-            background: var(--bg-panel); 
-            padding: 20px; 
-            border: 2px solid var(--neon-blue);
-            text-align: center; 
-            color: white; 
-            box-shadow: 0 0 25px var(--neon-blue); 
-            z-index: 10;
-            border-radius: 15px;
-            width: 300px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        /* Esconder scrollbar para manter estética */
-        .mod-box::-webkit-scrollbar { width: 0px; }
-
-        h2 { 
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
-            margin: 0 0 20px 0;
-            letter-spacing: 2px;
-        }
-
-        .category {
-            color: var(--neon-green);
-            font-size: 0.7rem;
-            text-align: left;
-            margin: 15px 0 5px;
-            border-bottom: 1px solid rgba(0, 255, 0, 0.3);
-            text-transform: uppercase;
-        }
-
-        /* Linha de Opção */
-        .option {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-        }
-
-        .option-name { font-size: 14px; color: #eee; }
-
-        /* Switch Toggle */
-        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #333;
-            transition: .4s; border-radius: 20px;
-        }
-        .slider:before {
-            position: absolute; content: "";
-            height: 14px; width: 14px;
-            left: 3px; bottom: 3px;
-            background-color: white; transition: .4s; border-radius: 50%;
-        }
-        input:checked + .slider { background-color: var(--neon-blue); }
-        input:checked + .slider:before { transform: translateX(20px); box-shadow: 0 0 10px var(--neon-blue); }
-
-        button.launch-btn {
-            background: var(--neon-blue); 
-            color: black; 
-            border: none; 
-            padding: 12px;
-            margin-top: 20px; 
-            cursor: pointer; 
-            font-weight: bold;
-            width: 100%;
-            border-radius: 8px;
-            text-transform: uppercase;
-            box-shadow: 0 0 15px var(--neon-blue);
-        }
+        .btn-game { background: var(--blue); color: black; border: none; width: 100%; padding: 12px; font-weight: bold; border-radius: 8px; margin-top: 15px; cursor: pointer; text-transform: uppercase; }
     </style>
 </head>
 <body>
-    <canvas id="matrix"></canvas>
-
-    <div class="mod-box">
-        <h2>NEXUS DUMP</h2>
+    <div class="container">
+        <h3>NEXUS V2 VIP</h3>
         
-        <div class="category">Combate</div>
-        <div class="option">
-            <span class="option-name">AimLock 100%</span>
-            <label class="switch">
-                <input type="checkbox" onclick="sendPatch('AimLock', '0x336371c', '0000A0E3', this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="option">
-            <span class="option-name">No Recoil</span>
-            <label class="switch">
-                <input type="checkbox" onclick="sendPatch('No Recoil', '0x68a10dc', '0000A0E3', this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
+        <div class="cat">Combate</div>
+        <div class="opt"><span>Aimlock 100%</span><input type="checkbox" onclick="send('Aim', '0x336371c', '0000A0E3', this.checked)"></div>
+        <div class="opt"><span>No Recoil</span><input type="checkbox" onclick="send('Recoil', '0x68a10dc', '0000A0E3', this.checked)"></div>
 
-        <div class="category">Movimentação</div>
-        <div class="option">
-            <span class="option-name">SkyDive Max Speed</span>
-            <label class="switch">
-                <input type="checkbox" onclick="sendPatch('SkyDive Speed', '0x6ef16e8', '0000A0E3', this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="option">
-            <span class="option-name">Fly Altura Min</span>
-            <label class="switch">
-                <input type="checkbox" onclick="sendPatch('Fly Min', '0x5ff59f4', '0000A0E3', this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
+        <div class="cat">Movimento</div>
+        <div class="opt"><span>SkyDive Speed</span><input type="checkbox" onclick="send('Sky', '0x6ef16e8', '0000A0E3', this.checked)"></div>
+        <div class="opt"><span>Fly Hack</span><input type="checkbox" onclick="send('Fly', '0x5ff59f4', '0000A0E3', this.checked)"></div>
 
-        <div class="category">Visual & Sistema</div>
-        <div class="option">
-            <span class="option-name">Wallhack Render</span>
-            <label class="switch">
-                <input type="checkbox" onclick="sendPatch('Wallhack', '0x3360e0c', '0000A0E3', this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="option">
-            <span class="option-name">Antena Head</span>
-            <label class="switch">
-                <input type="checkbox" onclick="sendPatch('Antena', '0x3357530', '0000A0E3', this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="option">
-            <span class="option-name">FPS Unlock</span>
-            <label class="switch">
-                <input type="checkbox" onclick="sendPatch('FPS Unlock', '0x7f826c8', '0000A0E3', this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
+        <div class="cat">Visual</div>
+        <div class="opt"><span>Wallhack</span><input type="checkbox" onclick="send('Wall', '0x3360e0c', '0000A0E3', this.checked)"></div>
+        <div class="opt"><span>Antena Head</span><input type="checkbox" onclick="send('Antena', '0x3357530', '0000A0E3', this.checked)"></div>
 
-        <button class="launch-btn" onclick="abrirJogo()">INICIAR FREE FIRE</button>
+        <button class="btn-game" onclick="Android.abrirJogo()">INICIAR FREE FIRE</button>
     </div>
 
     <script>
-        // Matrix Effect
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const letters = "01010101";
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-
-        function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#003300';
-            ctx.font = fontSize + 'px arial';
-            drops.forEach((y, i) => {
-                const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, y * fontSize);
-                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            });
-        }
-        setInterval(draw, 50);
-
-        // FUNÇÕES DE COMUNICAÇÃO COM O ANDROID (SKETCHWARE)
-        function sendPatch(name, offset, hex, isActive) {
-            if (typeof Android !== "undefined") {
-                Android.applyPatch(name, offset, hex, isActive);
-            }
-        }
-
-        function abrirJogo() {
-            if (typeof Android !== "undefined") {
-                Android.abrirJogo();
+        function send(name, offset, hex, status) {
+            if (typeof Android !== 'undefined') {
+                Android.applyPatch(name, offset, hex, status);
             }
         }
     </script>
