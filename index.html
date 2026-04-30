@@ -6,110 +6,66 @@
     <title>NEXUS VIP OB53</title>
     <style>
         canvas#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; }
-        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Courier New', monospace; overflow-x: hidden; color: #0f0; }
-        
-        .panel-container {
-            width: 90%; max-width: 320px; background-color: rgba(0, 0, 0, 0.95);
-            border-radius: 20px; padding: 25px 20px; text-align: center;
-            box-sizing: border-box; position: relative; margin: 20px 0;
-        }
-
-        #auth-panel { border: 2px solid #0f0; box-shadow: 0 0 15px rgba(0, 255, 0, 0.7); }
-        #mod-panel { border: 2px solid #0ff; box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); display: none; }
-
-        .title-green { font-size: 24px; font-weight: bold; text-shadow: 0 0 10px #0f0; margin: 0 0 20px 0; }
-        .title-cyan { font-size: 24px; font-weight: bold; text-shadow: 0 0 15px #0ff; color: #0ff; margin: 0 0 20px 0; }
-
-        .cat-title { color: #0ff; font-size: 10px; text-align: left; margin: 15px 0 5px; border-left: 2px solid #0ff; padding-left: 5px; opacity: 0.6; }
-
-        .key-input { width: 100%; background: rgba(0, 20, 0, 0.5); border: 1px solid #0f0; border-radius: 8px; padding: 12px; color: #0f0; font-family: inherit; text-align: center; outline: none; margin-bottom: 20px; box-sizing: border-box; }
-        
-        .btn-green { width: 100%; background: #0f0; border: none; border-radius: 8px; padding: 12px; color: #000; font-weight: bold; box-shadow: 0 0 10px #0f0; text-transform: uppercase; }
-        .btn-cyan { width: 100%; background: #0ff; border: none; border-radius: 8px; padding: 14px; color: #000; font-weight: bold; box-shadow: 0 0 20px #0ff; text-transform: uppercase; margin-top: 15px; }
-
-        .function-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; border-bottom: 1px solid rgba(0, 255, 255, 0.1); }
-        .function-name { color: #0f0; font-size: 13px; text-transform: uppercase; }
-
-        /* Switch Styling */
-        .switch { position: relative; display: inline-block; width: 36px; height: 18px; }
+        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Courier New', monospace; overflow: hidden; color: #0f0; }
+        .panel { width: 90%; max-width: 320px; background: rgba(0, 0, 0, 0.95); border-radius: 20px; padding: 25px; text-align: center; box-sizing: border-box; }
+        #auth-p { border: 2px solid #0f0; box-shadow: 0 0 15px #0f0; }
+        #mod-p { border: 2px solid #0ff; box-shadow: 0 0 20px #0ff; display: none; }
+        .title-g { font-size: 24px; text-shadow: 0 0 10px #0f0; margin-bottom: 20px; }
+        .title-c { font-size: 24px; text-shadow: 0 0 15px #0ff; color: #0ff; margin-bottom: 20px; }
+        .cat { color: #0ff; font-size: 10px; text-align: left; margin: 15px 0 5px; border-left: 2px solid #0ff; padding-left: 5px; opacity: 0.6; }
+        .in { width: 100%; background: rgba(0,20,0,0.5); border: 1px solid #0f0; border-radius: 8px; padding: 12px; color: #0f0; text-align: center; margin-bottom: 20px; outline: none; }
+        .btn-g { width: 100%; background: #0f0; border: none; border-radius: 8px; padding: 12px; font-weight: bold; box-shadow: 0 0 10px #0f0; }
+        .btn-c { width: 100%; background: #0ff; border: none; border-radius: 8px; padding: 14px; font-weight: bold; box-shadow: 0 0 20px #0ff; margin-top: 15px; }
+        .item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(0,255,255,0.1); }
+        .switch { position: relative; width: 36px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #333; transition: .4s; border-radius: 20px; border: 1px solid rgba(0, 255, 255, 0.3); }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 2px; background: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background: rgba(0, 255, 255, 0.2); border-color: #0ff; }
-        input:checked + .slider:before { transform: translateX(18px); background: #0ff; box-shadow: 0 0 8px #0ff; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #333; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background: #0ff; }
+        input:checked + .slider:before { transform: translateX(18px); }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
 
-    <div id="auth-panel" class="panel-container">
-        <h1 class="title-green">NEXUS VIP</h1>
-        <input type="text" id="key" class="key-input" placeholder="DIGITE SUA KEY">
-        <button class="btn-green" onclick="checkKey()">ENTRAR NO MOD</button>
+    <div id="auth-p" class="panel">
+        <h1 class="title-g">NEXUS VIP</h1>
+        <input type="text" id="k" class="in" placeholder="DIGITE SUA KEY">
+        <button class="btn-g" onclick="login()">ENTRAR</button>
     </div>
 
-    <div id="mod-panel" class="panel-container">
-        <h1 class="title-cyan">MOD MENU OB53</h1>
-        
-        <div class="cat-title">COMBAT (LIB PATCH)</div>
-        <div class="function-item">
-            <span class="function-name">Aimbot 100%</span>
-            <label class="switch">
-                <input type="checkbox" onclick="Android.applyPatch('AIMBOT', '0x2B4A1C', '0000A0E3')">
-                <span class="slider"></span>
-            </label>
+    <div id="mod-p" class="panel">
+        <h1 class="title-c">MOD MENU OB53</h1>
+        <div class="cat">COMBATE</div>
+        <div class="item">
+            <span>AIMBOT 100%</span>
+            <label class="switch"><input type="checkbox" onclick="Android.applyPatch('AIM', '0x2B4A1C', '0000A0E3')"><span class="slider"></span></label>
         </div>
-        <div class="function-item">
-            <span class="function-name">Aim Lock Head</span>
-            <label class="switch">
-                <input type="checkbox" onclick="Android.applyPatch('AIM LOCK', '0x1F2A3B', '0100A0E3')">
-                <span class="slider"></span>
-            </label>
+        <div class="item">
+            <span>ANTENA HEAD</span>
+            <label class="switch"><input type="checkbox" onclick="Android.applyPatch('ANTENA', '0x1A2B3C', '0100A0E3')"><span class="slider"></span></label>
         </div>
-
-        <div class="cat-title">VISUAL & MISC</div>
-        <div class="function-item">
-            <span class="function-name">Antena Head</span>
-            <label class="switch">
-                <input type="checkbox" onclick="Android.applyPatch('ANTENA', '0x3C4D5E', '0200A0E3')">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="function-item">
-            <span class="function-name">No Recoil</span>
-            <label class="switch">
-                <input type="checkbox" onclick="Android.applyPatch('RECOIL', '0x4D5E6F', '0300A0E3')">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <button class="btn-cyan" onclick="Android.abrirJogo()">INICIAR JOGO</button>
+        <button class="btn-c" onclick="Android.abrirJogo()">ABRIR JOGO</button>
     </div>
 
     <script>
-        // Matrix Background
         const c = document.getElementById('matrix'), ctx = c.getContext('2d');
         c.height = window.innerHeight; c.width = window.innerWidth;
-        const char = "0123456789ABCDEF".split('');
-        const fontSize = 14, columns = c.width / fontSize, drops = [];
-        for (let x = 0; x < columns; x++) drops[x] = 1;
+        const s = Array(256).fill(0);
         function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; ctx.fillRect(0, 0, c.width, c.height);
-            ctx.fillStyle = '#0f0'; ctx.font = fontSize + 'px monospace';
-            for (let i = 0; i < drops.length; i++) {
-                const text = char[Math.floor(Math.random() * char.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
+            ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,c.width,c.height);
+            ctx.fillStyle = '#0f0'; ctx.font = '14px monospace';
+            s.forEach((y, i) => {
+                ctx.fillText(String.fromCharCode(33+Math.random()*94), i*10, y);
+                s[i] = y > 758 + Math.random()*1e4 ? 0 : y + 10;
+            });
         }
         setInterval(draw, 35);
 
-        function checkKey() {
-            const input = document.getElementById('key').value.trim().toUpperCase();
-            if (input === "NEXUS") {
-                document.getElementById('auth-panel').style.display = 'none';
-                document.getElementById('mod-panel').style.display = 'block';
+        function login() {
+            if(document.getElementById('k').value.toUpperCase() === "NEXUS") {
+                document.getElementById('auth-p').style.display = 'none';
+                document.getElementById('mod-p').style.display = 'block';
             } else { alert("KEY INVÁLIDA!"); }
         }
     </script>
