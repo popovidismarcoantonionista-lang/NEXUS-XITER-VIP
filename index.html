@@ -47,55 +47,48 @@
 
     <div id="auth-ui" class="panel">
         <h1 class="title-g">NEXUS VIP</h1>
-        <input type="text" id="key" class="in" placeholder="DIGITE SUA KEY">
-        <button class="btn-g" onclick="login()">ENTRAR NO MOD</button>
+        <input type="text" id="keyInput" class="in" placeholder="DIGITE SUA KEY">
+        <button class="btn-g" onclick="fazerLogin()">ENTRAR NO MOD</button>
     </div>
 
     <div id="mod-ui" class="panel">
         <h1 class="title-c">OB53 DUMP MENU</h1>
         
-        <div class="cat">Combate (Auto Aim)</div>
+        <div class="cat">Combate</div>
         <div class="item">
             <span class="name">AimLock Camera</span>
             <label class="switch">
-                <input type="checkbox" onclick="safePatch('AimLock', '0x336371c', '0000A0E3')">
+                <input type="checkbox" onclick="sendPatch('AimLock', '0x336371c', '0000A0E3')">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <div class="cat">Movimentação VIP</div>
+        <div class="cat">Movimentação</div>
         <div class="item">
-            <span class="name">Speed Shoot/Move</span>
+            <span class="name">Speed Shoot</span>
             <label class="switch">
-                <input type="checkbox" onclick="safePatch('SpeedMove', '0x68a10dc', '0000A0E3')">
+                <input type="checkbox" onclick="sendPatch('SpeedMove', '0x68a10dc', '0000A0E3')">
                 <span class="slider"></span>
             </label>
         </div>
         <div class="item">
             <span class="name">SkyDive Speed</span>
             <label class="switch">
-                <input type="checkbox" onclick="safePatch('FlySky', '0x6ef16e8', '0000A0E3')">
+                <input type="checkbox" onclick="sendPatch('FlySky', '0x6ef16e8', '0000A0E3')">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <div class="cat">Visual & Mapa</div>
+        <div class="cat">Visual</div>
         <div class="item">
-            <span class="name">Field of View (FOV)</span>
+            <span class="name">Field of View</span>
             <label class="switch">
-                <input type="checkbox" onclick="safePatch('FOV', '0x3357530', '0000A0E3')">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="item">
-            <span class="name">Chams Color (OnRender)</span>
-            <label class="switch">
-                <input type="checkbox" onclick="safePatch('Chams', '0x33617dc', '0000A0E3')">
+                <input type="checkbox" onclick="sendPatch('FOV', '0x3357530', '0000A0E3')">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <button class="btn-c" onclick="safeLaunch()">INICIAR FREE FIRE</button>
+        <button class="btn-c" onclick="abrirOJogo()">INICIAR FREE FIRE</button>
     </div>
 
     <script>
@@ -117,31 +110,29 @@
         }
         setInterval(draw, 35);
 
-        // LOGIN SYSTEM
-        function login() {
-            const pass = document.getElementById('key').value.trim().toUpperCase();
-            if(pass === "NEXUS") {
+        // FUNÇÃO DE LOGIN CORRIGIDA
+        function fazerLogin() {
+            var digitado = document.getElementById('keyInput').value.trim().toUpperCase();
+            
+            // KEY DEFINIDA AQUI: NEXUS
+            if (digitado === "NEXUS") {
                 document.getElementById('auth-ui').style.display = 'none';
                 document.getElementById('mod-ui').style.display = 'block';
-            } else { 
-                alert("KEY INCORRETA!"); 
+            } else {
+                alert("KEY INCORRETA! Tente novamente.");
             }
         }
 
-        // FUNÇÕES SEGURAS (Não travam se o Android não responder)
-        function safePatch(name, offset, hex) {
-            if (typeof Android !== "undefined" && Android.applyPatch) {
+        // FUNÇÕES PARA O ANDROID
+        function sendPatch(name, offset, hex) {
+            if (typeof Android !== "undefined") {
                 Android.applyPatch(name, offset, hex);
-            } else {
-                console.log("Interface Java não detectada.");
             }
         }
 
-        function safeLaunch() {
-            if (typeof Android !== "undefined" && Android.abrirJogo) {
+        function abrirOJogo() {
+            if (typeof Android !== "undefined") {
                 Android.abrirJogo();
-            } else {
-                alert("Erro: Não foi possível iniciar o jogo pelo Java.");
             }
         }
     </script>
