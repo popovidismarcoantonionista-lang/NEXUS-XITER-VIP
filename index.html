@@ -5,41 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NEXUS VIP OB53</title>
     <style>
-        /* Matrix Background */
-        canvas#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; }
-        
-        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Courier New', monospace; overflow-x: hidden; color: #0f0; }
-
-        .panel {
-            width: 90%; max-width: 320px; background-color: rgba(0, 0, 0, 0.95);
-            border-radius: 20px; padding: 25px 20px; text-align: center;
-            box-sizing: border-box; position: relative;
+        :root {
+            --neon-green: #00ff41;
+            --neon-blue: #00f7ff;
+            --bg-dark: rgba(0, 0, 0, 0.92);
         }
 
-        /* Estilo das Bordas e Sombras */
-        #auth-ui { border: 2px solid #0f0; box-shadow: 0 0 15px rgba(0, 255, 0, 0.7); }
-        #mod-ui { border: 2px solid #0ff; box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); display: none; }
-
-        .title-g { font-size: 24px; font-weight: bold; text-shadow: 0 0 10px #0f0; margin-bottom: 20px; }
-        .title-c { font-size: 24px; font-weight: bold; text-shadow: 0 0 15px #0ff; color: #0ff; margin-bottom: 20px; }
-
-        .cat { color: #0ff; font-size: 10px; text-align: left; margin: 15px 0 5px; border-left: 2px solid #0ff; padding-left: 5px; opacity: 0.6; text-transform: uppercase; }
-
-        .in { width: 100%; background: rgba(0, 20, 0, 0.5); border: 1px solid #0f0; border-radius: 8px; padding: 12px; color: #0f0; text-align: center; outline: none; margin-bottom: 20px; font-family: inherit; }
+        canvas#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; }
         
-        .btn-g { width: 100%; background: #0f0; border: none; border-radius: 8px; padding: 12px; color: #000; font-weight: bold; box-shadow: 0 0 10px #0f0; cursor: pointer; }
-        .btn-c { width: 100%; background: #0ff; border: none; border-radius: 8px; padding: 14px; color: #000; font-weight: bold; box-shadow: 0 0 20px #0ff; margin-top: 15px; cursor: pointer; }
+        body { 
+            margin: 0; padding: 0; 
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            overflow: hidden; color: var(--neon-green); 
+        }
 
-        .item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(0, 255, 255, 0.1); }
-        .name { color: #0f0; font-size: 13px; text-transform: uppercase; }
+        .panel {
+            width: 85%; max-width: 340px; 
+            background: var(--bg-dark);
+            border-radius: 15px; padding: 30px 20px; 
+            text-align: center; position: relative;
+            backdrop-filter: blur(10px);
+            transition: all 0.5s ease;
+        }
 
-        /* Switches Neon */
-        .switch { position: relative; display: inline-block; width: 36px; height: 18px; }
+        /* Bordas Neon Dinâmicas */
+        #auth-ui { border: 1px solid var(--neon-green); box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); }
+        #mod-ui { border: 1px solid var(--neon-blue); box-shadow: 0 0 25px rgba(0, 247, 255, 0.2); display: none; }
+
+        .title-g { font-size: 28px; letter-spacing: 3px; font-weight: 900; text-shadow: 0 0 10px var(--neon-green); margin-bottom: 30px; }
+        .title-c { font-size: 22px; letter-spacing: 2px; font-weight: 800; color: var(--neon-blue); text-shadow: 0 0 15px var(--neon-blue); margin-bottom: 20px; }
+
+        .cat { 
+            color: var(--neon-blue); font-size: 11px; text-align: left; 
+            margin: 20px 0 10px; padding-left: 10px; 
+            border-left: 3px solid var(--neon-blue); 
+            text-transform: uppercase; font-weight: bold; letter-spacing: 1px;
+        }
+
+        .in { 
+            width: 100%; background: rgba(0, 40, 0, 0.3); 
+            border: 1px solid var(--neon-green); border-radius: 5px; 
+            padding: 15px; color: #fff; text-align: center; 
+            outline: none; margin-bottom: 25px; box-sizing: border-box;
+            font-size: 16px; transition: 0.3s;
+        }
+        .in:focus { box-shadow: 0 0 15px var(--neon-green); background: rgba(0, 60, 0, 0.5); }
+        
+        .btn-g { 
+            width: 100%; background: linear-gradient(45deg, #008f11, var(--neon-green)); 
+            border: none; border-radius: 5px; padding: 15px; 
+            color: #000; font-weight: bold; font-size: 14px;
+            cursor: pointer; text-transform: uppercase; transition: 0.3s;
+        }
+        .btn-g:active { transform: scale(0.98); opacity: 0.8; }
+
+        .btn-c { 
+            width: 100%; background: linear-gradient(45deg, #00a2ff, var(--neon-blue)); 
+            border: none; border-radius: 5px; padding: 15px; 
+            color: #000; font-weight: bold; margin-top: 25px;
+            cursor: pointer; text-transform: uppercase; box-shadow: 0 5px 15px rgba(0, 247, 255, 0.3);
+        }
+
+        .item { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 12px 10px; background: rgba(255, 255, 255, 0.03);
+            margin-bottom: 8px; border-radius: 8px;
+        }
+        .name { color: #e0e0e0; font-size: 14px; font-weight: 500; }
+
+        /* Switches Estilizados */
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #333; transition: .4s; border-radius: 20px; border: 1px solid rgba(0, 255, 255, 0.3); }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 2px; background: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background: rgba(0, 255, 255, 0.2); border-color: #0ff; }
-        input:checked + .slider:before { transform: translateX(18px); background: #0ff; box-shadow: 0 0 8px #0ff; }
+        .slider { 
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; 
+            background: #222; transition: .4s; border-radius: 34px; 
+        }
+        .slider:before { 
+            position: absolute; content: ""; height: 16px; width: 16px; 
+            left: 4px; bottom: 3px; background: #555; transition: .4s; border-radius: 50%; 
+        }
+        input:checked + .slider { background: rgba(0, 247, 255, 0.2); }
+        input:checked + .slider:before { transform: translateX(20px); background: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); }
+
     </style>
 </head>
 <body>
@@ -47,14 +95,14 @@
 
     <div id="auth-ui" class="panel">
         <h1 class="title-g">NEXUS VIP</h1>
-        <input type="text" id="keyInput" class="in" placeholder="DIGITE SUA KEY">
-        <button class="btn-g" onclick="fazerLogin()">ENTRAR NO MOD</button>
+        <input type="text" id="keyInput" class="in" placeholder="ENTER ACCESS KEY">
+        <button class="btn-g" onclick="fazerLogin()">AUTHENTICATE</button>
     </div>
 
     <div id="mod-ui" class="panel">
-        <h1 class="title-c">OB53 DUMP MENU</h1>
+        <h1 class="title-c">DUMP MENU OB53</h1>
         
-        <div class="cat">Combate</div>
+        <div class="cat">Combat Functions</div>
         <div class="item">
             <span class="name">AimLock Camera</span>
             <label class="switch">
@@ -63,44 +111,44 @@
             </label>
         </div>
 
-        <div class="cat">Movimentação</div>
+        <div class="cat">Movement Mods</div>
         <div class="item">
-            <span class="name">Speed Shoot</span>
+            <span class="name">Speed Multiplier</span>
             <label class="switch">
                 <input type="checkbox" onclick="sendPatch('SpeedMove', '0x68a10dc', '0000A0E3')">
                 <span class="slider"></span>
             </label>
         </div>
         <div class="item">
-            <span class="name">SkyDive Speed</span>
+            <span class="name">Fast SkyDive</span>
             <label class="switch">
                 <input type="checkbox" onclick="sendPatch('FlySky', '0x6ef16e8', '0000A0E3')">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <div class="cat">Visual</div>
+        <div class="cat">Visual Settings</div>
         <div class="item">
-            <span class="name">Field of View</span>
+            <span class="name">Custom FOV</span>
             <label class="switch">
                 <input type="checkbox" onclick="sendPatch('FOV', '0x3357530', '0000A0E3')">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <button class="btn-c" onclick="abrirOJogo()">INICIAR FREE FIRE</button>
+        <button class="btn-c" onclick="abrirOJogo()">LAUNCH GAME</button>
     </div>
 
     <script>
-        // Matrix Effect
+        // Matrix Background Animation
         const c = document.getElementById('matrix'), ctx = c.getContext('2d');
         c.height = window.innerHeight; c.width = window.innerWidth;
-        const char = "0123456789ABCDEF".split('');
+        const char = "01".split('');
         const fontSize = 14, columns = c.width / fontSize, drops = [];
         for (let x = 0; x < columns; x++) drops[x] = 1;
         function draw() {
-            ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,c.width,c.height);
-            ctx.fillStyle = '#0f0'; ctx.font = fontSize + 'px monospace';
+            ctx.fillStyle = 'rgba(0,0,0,0.08)'; ctx.fillRect(0,0,c.width,c.height);
+            ctx.fillStyle = '#003300'; ctx.font = fontSize + 'px monospace';
             for (let i = 0; i < drops.length; i++) {
                 const text = char[Math.floor(Math.random() * char.length)];
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
@@ -108,32 +156,27 @@
                 drops[i]++;
             }
         }
-        setInterval(draw, 35);
+        setInterval(draw, 40);
 
-        // FUNÇÃO DE LOGIN CORRIGIDA
         function fazerLogin() {
             var digitado = document.getElementById('keyInput').value.trim().toUpperCase();
-            
-            // KEY DEFINIDA AQUI: NEXUS
-            if (digitado === "NEXUS-2026") {
-                document.getElementById('auth-ui').style.display = 'none';
-                document.getElementById('mod-ui').style.display = 'block';
+            if (digitado === "NEXUS") {
+                document.getElementById('auth-ui').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('auth-ui').style.display = 'none';
+                    document.getElementById('mod-ui').style.display = 'block';
+                }, 500);
             } else {
-                alert("KEY INCORRETA! Tente novamente.");
+                alert("ACCESS DENIED: Invalid Key");
             }
         }
 
-        // FUNÇÕES PARA O ANDROID
         function sendPatch(name, offset, hex) {
-            if (typeof Android !== "undefined") {
-                Android.applyPatch(name, offset, hex);
-            }
+            if (typeof Android !== "undefined") Android.applyPatch(name, offset, hex);
         }
 
         function abrirOJogo() {
-            if (typeof Android !== "undefined") {
-                Android.abrirJogo();
-            }
+            if (typeof Android !== "undefined") Android.abrirJogo();
         }
     </script>
 </body>
