@@ -3,105 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS VIP</title>
+    <title>NEXUS XITER VIP - Login</title>
+    
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: #050505; display: flex; justify-content: center; align-items: center; height: 100vh; color: white; }
-        
-        .container {
-            background: rgba(20, 20, 20, 0.95);
+        * { margin: 0; padding: 0; box-sizing: border-box; overflow: hidden; }
+        body { background: #000; font-family: 'Courier New', Courier, monospace; height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; }
+
+        /* --- Fundo Matrix de Números --- */
+        #matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+        /* --- Painel de Login Estilo Neon --- */
+        .login-card {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ffff; /* Borda Ciano */
+            border-radius: 20px;
             padding: 40px;
-            border-radius: 15px;
-            border: 1px solid #1f1f1f;
-            width: 90%;
-            max-width: 400px;
+            width: 85%;
+            max-width: 380px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6); /* Brilho Ciano */
+            z-index: 10;
         }
 
-        h2 { font-size: 2em; letter-spacing: 4px; margin-bottom: 10px; color: #fff; text-shadow: 0 0 10px #333; }
-        p { color: #666; font-size: 0.9em; margin-bottom: 30px; }
+        .title { color: #00ffff; font-size: 1.6em; letter-spacing: 3px; font-weight: bold; margin-bottom: 5px; text-shadow: 0 0 10px #00ffff; }
+        .subtitle { color: #008080; font-size: 0.8em; letter-spacing: 1px; margin-bottom: 30px; }
 
+        /* --- Campo de Input --- */
+        .input-group { position: relative; margin-bottom: 25px; }
         input {
             width: 100%;
             padding: 15px;
-            background: #111;
-            border: 1px solid #333;
-            border-radius: 8px;
-            color: #fff;
-            margin-bottom: 20px;
+            background: transparent;
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+            color: #00ffff;
             text-align: center;
+            outline: none;
             transition: 0.3s;
         }
+        input::placeholder { color: rgba(0, 255, 255, 0.4); }
+        input:focus { box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); border-width: 2px; }
 
-        input:focus { border-color: #555; outline: none; background: #151515; }
-
+        /* --- Botão Neon Ciano --- */
         button {
             width: 100%;
             padding: 15px;
-            background: #fff;
+            background: #00ffff;
             color: #000;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
+            font-size: 1em;
             font-weight: bold;
+            text-transform: uppercase;
             cursor: pointer;
             transition: 0.3s;
-            text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
         }
+        button:hover { background: #00cccc; box-shadow: 0 0 25px rgba(0, 255, 255, 0.9); transform: scale(1.02); }
 
-        button:hover { background: #ccc; transform: translateY(-2px); }
-        .status { margin-top: 20px; font-size: 0.8em; color: #444; }
+        .status { margin-top: 15px; color: #00ffff; font-size: 0.8em; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>NEXUS</h2>
-    <p>DIGITE SUA CHAVE DE ACESSO</p>
-    
-    <input type="text" id="input_key" placeholder="••••••••••••">
-    <button onclick="verificar()">ENTRAR</button>
-    
-    <div id="status" class="status">AGUARDANDO...</div>
-</div>
+    <canvas id="matrix"></canvas>
 
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyA0Q2b-zUJRT7VBrsKRdsln7UR9hLy_YKY",
-        databaseURL: "https://alphagen-p9d3i-default-rtdb.firebaseio.com", // Link corrigido
-        projectId: "alphagen-p9d3i",
-        appId: "1:391202812925:android:f4498042d3c1db3c99df94"
-    };
+    <div class="login-card">
+        <div class="title">NEXUS XITER VIP</div>
+        <div class="subtitle">SISTEMA DE AUTENTICAÇÃO</div>
+        
+        <div class="input-group">
+            <input type="text" id="input_key" placeholder="COLE SUA KEY AQUI">
+        </div>
 
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
+        <button onclick="verificarKey()">LOGAR NO MOD</button>
+        
+        <div id="status" class="status"></div>
+    </div>
 
-    function verificar() {
-        const key = document.getElementById("input_key").value;
-        const status = document.getElementById("status");
-
-        if(!key) return alert("Digite a Key!");
-
-        status.innerText = "VALIDANDO...";
-
-        database.ref('keys/' + key).once('value').then((snapshot) => {
-            if (snapshot.exists()) {
-                status.innerText = "SUCESSO!";
-                if(window.Android) window.Android.loginSucesso();
-                setTimeout(() => { window.location.href = "sucesso.login.html"; }, 1000);
-            } else {
-                status.innerText = "KEY INVÁLIDA";
-                alert("Key não encontrada!");
+    <script>
+        // --- Animação do Fundo Matrix ---
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        const characters = "0123456789";
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+        for (let x = 0; x < columns; x++) drops[x] = 1;
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#00ffff"; // Cor Ciano
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
             }
-        }).catch((e) => {
-            alert("Erro!");
-            console.log(e);
-        });
-    }
-</script>
+        }
+        setInterval(drawMatrix, 35);
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
+        // --- Configuração do Firebase (Extraída do seu JSON) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0Q2b-zUJRT7VBrsKRdsln7UR9hLy_YKY",
+            authDomain: "alphagen-p9d3i.firebaseapp.com",
+            databaseURL: "https://alphagen-p9d3i-default-rtdb.firebaseio.com",
+            projectId: "alphagen-p9d3i",
+            storageBucket: "alphagen-p9d3i.firebasestorage.app",
+            messagingSenderId: "391202812925",
+            appId: "1:391202812925:android:f4498042d3c1db3c99df94"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // --- Lógica de Login ---
+        function verificarKey() {
+            const keyDigitada = document.getElementById("input_key").value;
+            const statusDiv = document.getElementById("status");
+
+            if (keyDigitada === "") {
+                alert("DIGITE UMA KEY!");
+                return;
+            }
+
+            statusDiv.innerHTML = "VERIFICANDO...";
+
+            // Consulta no nó 'keys' do Realtime Database
+            database.ref('keys/' + keyDigitada).once('value')
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        statusDiv.innerHTML = "ACESSO PERMITIDO!";
+                        
+                        // Avisa o App Android (Sketchware) que o login deu certo
+                        if (window.Android && window.Android.loginSucesso) {
+                            window.Android.loginSucesso();
+                        }
+
+                        // Redireciona para o Painel Principal (que vamos criar)
+                        setTimeout(() => {
+                            window.location.href = "painel.html"; // MUDADO PARA painel.html
+                        }, 1000);
+                        
+                    } else {
+                        statusDiv.innerHTML = "KEY INVÁLIDA";
+                        alert("KEY NÃO ENCONTRADA OU EXPIRADA!");
+                    }
+                })
+                .catch((error) => {
+                    statusDiv.innerHTML = "ERRO DE CONEXÃO";
+                    console.error(error);
+                    alert("Erro!");
+                });
+        }
+    </script>
 </body>
 </html>
