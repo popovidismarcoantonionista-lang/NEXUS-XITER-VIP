@@ -5,141 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NEXUS - PAINEL VIP</title>
     <style>
-        :root {
-            --neon-blue: #00f7ff;
-            --neon-green: #00ff00;
-            --bg-dark: #000;
-            --glow: 0 0 15px var(--neon-blue);
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: #fff;
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            letter-spacing: 0.5px;
-        }
-
-        /* Fundo Matrix - mantendo para consistência visual */
-        canvas#matrix { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 320px;
-            background: rgba(0, 0, 0, 0.95);
-            border: 2px solid var(--neon-blue);
-            border-radius: 12px;
-            padding: 30px;
-            backdrop-filter: blur(5px);
-            box-shadow: var(--glow), inset var(--glow);
-        }
-
-        h3 {
-            color: var(--neon-blue);
-            text-align: center;
-            margin: 0 0 25px 0;
-            font-size: 24px;
-            font-weight: normal;
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            text-shadow: var(--glow);
-        }
-
-        .cat {
-            color: var(--neon-green);
-            font-size: 11px;
-            text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 1.5px;
-            margin: 20px 0 10px 0;
-            padding-bottom: 3px;
-            border-bottom: 1px solid #333;
-        }
-
-        .opt {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-
-        .opt span {
-            font-size: 15px;
-            color: #ccc;
-        }
+        :root { --neon-blue: #00f7ff; --neon-green: #00ff00; --bg-dark: #000; }
+        body { background: var(--bg-dark); color: #fff; font-family: 'Courier New', monospace; margin: 0; padding: 15px; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+        canvas#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .container { width: 100%; max-width: 320px; background: rgba(0, 0, 0, 0.9); border: 2px solid var(--neon-blue); border-radius: 12px; padding: 25px; box-shadow: 0 0 15px var(--neon-blue); position: relative; }
+        h3 { color: var(--neon-blue); text-align: center; margin: 0 0 15px 0; text-shadow: 0 0 8px var(--neon-blue); }
         
-        /* Checkbox Style - Estilo iOS refinado */
-        input[type="checkbox"] {
-            width: 50px;
-            height: 26px;
-            appearance: none;
-            background: #333;
-            border-radius: 13px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
-        }
+        /* Modificação 1: Caixa de Licença */
+        .license-info { font-size: 10px; color: var(--neon-blue); border: 1px solid rgba(0, 247, 255, 0.3); padding: 8px; border-radius: 5px; text-align: center; margin-bottom: 20px; background: rgba(0, 247, 255, 0.05); }
 
-        input[type="checkbox"]:checked {
-            background: #444; /* Cor de fundo quando ativado */
-        }
+        .cat { color: var(--neon-green); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid #333; margin: 15px 0 10px; padding-bottom: 3px; }
+        .opt { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .opt span { font-size: 14px; }
+        
+        /* Switch Estilizado */
+        input[type="checkbox"] { width: 45px; height: 22px; appearance: none; background: #333; border-radius: 15px; position: relative; cursor: pointer; transition: 0.3s; }
+        input[type="checkbox"]:checked { background: var(--neon-blue); }
+        input[type="checkbox"]::before { content: ''; position: absolute; width: 16px; height: 16px; background: #fff; border-radius: 50%; top: 3px; left: 4px; transition: 0.3s; }
+        input[type="checkbox"]:checked::before { left: 25px; }
 
-        input[type="checkbox"]::before {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: #aaa;
-            border-radius: 50%;
-            top: 3px;
-            left: 3px;
-            transition: all 0.3s;
-        }
+        .btn-game { background: var(--neon-blue); color: #000; border: none; width: 100%; padding: 15px; font-weight: bold; border-radius: 8px; margin-top: 20px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 10px var(--neon-blue); }
 
-        input[type="checkbox"]:checked::before {
-            left: 27px;
-            background: #fff;
-            box-shadow: 0 0 8px #fff;
-        }
-
-        .btn-game {
-            background: var(--neon-blue);
-            color: black;
-            border: none;
-            width: 100%;
-            padding: 18px;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 10px;
-            margin-top: 35px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            box-shadow: var(--glow);
-        }
-
-        .btn-game:active {
-            transform: scale(0.98);
-            box-shadow: 0 0 25px var(--neon-blue);
-        }
-
+        /* Modificação 2: Estilo do Toast (Aviso) */
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: var(--neon-blue); padding: 10px 20px; border: 1px solid var(--neon-blue); border-radius: 5px; font-size: 12px; display: none; z-index: 1000; }
     </style>
 </head>
 <body oncontextmenu="return false;">
     <canvas id="matrix"></canvas>
+    <div id="toast"></div>
 
     <div class="container">
         <h3>NEXUS DUMP</h3>
+
+        <div class="license-info">
+            LICENÇA: <span style="color:#fff">NEXUS-2026-VIP</span><br>
+            STATUS: <span style="color:var(--neon-green)">ATIVO (30 DIAS)</span>
+        </div>
         
         <div class="cat">Combate</div>
         <div class="opt"><span>Aimlock 100%</span><input type="checkbox" onclick="send('Aim', '0x336371c', '0000A0E3', this.checked)"></div>
@@ -151,53 +52,43 @@
 
         <div class="cat">Visual</div>
         <div class="opt"><span>Wallhack</span><input type="checkbox" onclick="send('Wall', '0x3360e0c', '0000A0E3', this.checked)"></div>
-        <div class="opt"><span>Antena Head</span><input type="checkbox" onclick="send('Antena', '0x3357530', '0000A0E3', this.checked)"></div>
-
         <button class="btn-game" onclick="Android.abrirJogo()">INICIAR FREE FIRE</button>
     </div>
 
     <script>
-        // Matrix Effect
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-
-        canvas.height = window.innerHeight;
-        canvas.width = window.innerWidth;
-
-        const characters = "01010101";
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-
-        function drawMatrix() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.font = fontSize + "px monospace";
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = characters.charAt(Math.floor(Math.random() * characters.length));
-                ctx.fillStyle = "#001100"; /* Cor do fundo matrix mais sutil */
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
+        // Modificação 3: Segurança (Anti-Pulo)
+        if (localStorage.getItem("nexus_vip_session") !== "active") {
+            window.location.href = "index.html";
         }
-        setInterval(drawMatrix, 45);
 
-        // Funções de Patching - Mantidas intactas
+        // Matrix Background
+        const canvas = document.getElementById('matrix'), ctx = canvas.getContext('2d');
+        canvas.height = window.innerHeight; canvas.width = window.innerWidth;
+        const drops = Array(Math.floor(canvas.width/16)).fill(1);
+        function draw() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "14px monospace"; ctx.fillStyle = "#003300";
+            drops.forEach((y, i) => {
+                ctx.fillText(Math.floor(Math.random()*2), i*16, y*16);
+                if (y*16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }
+        setInterval(draw, 50);
+
+        // Função de Envio com Toast
         function send(name, offset, hex, status) {
             if (navigator.vibrate) navigator.vibrate(20);
+            
+            // Exibir Toast
+            const toast = document.getElementById("toast");
+            toast.innerText = status ? name + " ATIVADO" : name + " DESATIVADO";
+            toast.style.display = "block";
+            setTimeout(() => { toast.style.display = "none"; }, 2000);
+
             if (typeof Android !== 'undefined') {
                 Android.applyPatch(name, offset, hex, status);
             }
-        }
-
-        // Bloqueio de inspeção básico
-        document.onkeydown = function(e) {
-            if(e.keyCode == 123) return false;
         }
     </script>
 </body>
