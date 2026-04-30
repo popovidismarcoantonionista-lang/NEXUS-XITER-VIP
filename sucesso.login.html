@@ -2,133 +2,141 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS - PAINEL VIP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS DUMP - Painel</title>
     <style>
-        :root { 
-            --neon-blue: #00f7ff; 
-            --neon-green: #00ff00; 
-            --bg-dark: #000;
+        * { margin: 0; padding: 0; box-sizing: border-box; overflow: hidden; }
+        body { background: #000; font-family: 'Courier New', Courier, monospace; height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; }
+
+        /* --- Fundo Matrix (Mesmo do Login) --- */
+        #matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+        /* --- Painel de Hacks Estilo Neon --- */
+        .painel-card {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ffff; /* Borda Ciano */
+            border-radius: 20px;
+            padding: 30px;
+            width: 85%;
+            max-width: 380px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6); /* Brilho Ciano */
+            z-index: 10;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        .title { color: #00ffff; font-size: 1.6em; letter-spacing: 3px; font-weight: bold; margin-bottom: 25px; text-align: center; text-shadow: 0 0 10px #00ffff; }
 
-        body { 
-            background: var(--bg-dark); 
-            color: #fff; 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; padding: 15px; 
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; overflow: hidden;
-        }
-
-        canvas#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.2; }
-
-        .container { 
-            width: 100%; max-width: 320px; 
-            background: rgba(0, 0, 0, 0.95); 
-            border: 2.5px solid var(--neon-blue); 
-            border-radius: 20px; 
-            padding: 25px; 
-            box-shadow: 0 0 20px var(--neon-blue), inset 0 0 10px var(--neon-blue);
-        }
-
-        h3 { 
-            color: var(--neon-blue); 
-            text-align: center; margin: 0 0 25px 0; 
-            font-size: 26px; font-weight: 800;
-            text-transform: uppercase; letter-spacing: 4px; 
-            text-shadow: 0 0 15px var(--neon-blue); 
-        }
-
-        .cat { 
-            color: var(--neon-green); font-size: 11px; 
-            text-transform: uppercase; font-weight: bold;
-            border-bottom: 1.5px solid rgba(0, 255, 0, 0.2); 
-            margin: 20px 0 15px; padding-bottom: 5px; 
-            letter-spacing: 1px;
-        }
-
-        .opt { 
-            display: flex; justify-content: space-between; 
-            align-items: center; margin-bottom: 20px; 
-        }
-
-        .opt span { font-size: 16px; color: #fff; font-weight: 500; }
+        /* --- Estilo das Categorias e Itens --- */
+        .category { color: #008000; font-size: 0.8em; text-transform: uppercase; margin-top: 15px; margin-bottom: 10px; border-bottom: 1px solid rgba(0, 128, 0, 0.3); padding-bottom: 5px; }
         
-        /* Switch minimalista idêntico à foto */
-        input[type="checkbox"] { 
-            width: 46px; height: 24px; appearance: none; 
-            background: #333; border-radius: 20px; 
-            position: relative; cursor: pointer; transition: 0.3s; 
+        .hack-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(0, 255, 255, 0.1); }
+        .hack-name { color: #fff; font-size: 0.9em; letter-spacing: 1px; text-shadow: 0 0 5px rgba(255, 255, 255, 0.4); }
+
+        /* --- Estilo do Switch (Exatamente como o redondo da imagem) --- */
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: #fff; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #00ffff; box-shadow: 0 0 10px #00ffff; }
+        input:checked + .slider:before { transform: translateX(20px); background-color: #fff; }
+
+        /* --- Botão Neon Ciano "INICIAR JOGO" --- */
+        .start-btn {
+            margin-top: 35px;
+            width: 100%;
+            padding: 18px;
+            background: #00ffff;
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
         }
+        .start-btn:hover { background: #00cccc; box-shadow: 0 0 25px rgba(0, 255, 255, 0.9); transform: scale(1.02); }
 
-        input[type="checkbox"]:checked { background: #444; }
-
-        input[type="checkbox"]::before { 
-            content: ''; position: absolute; width: 18px; height: 18px; 
-            background: #fff; border-radius: 50%; 
-            top: 3px; left: 4px; transition: 0.3s; 
-        }
-
-        input[type="checkbox"]:checked::before { 
-            left: 24px; box-shadow: 0 0 12px #fff;
-        }
-
-        /* Botão Iniciar */
-        .btn-game { 
-            background: var(--neon-blue); 
-            color: #000; border: none; width: 100%; 
-            padding: 18px; font-size: 15px; font-weight: 900; 
-            border-radius: 12px; margin-top: 15px; 
-            cursor: pointer; text-transform: uppercase; 
-            box-shadow: 0 0 20px var(--neon-blue);
-            transition: 0.2s;
-        }
-
-        .btn-game:active { transform: scale(0.97); }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
+
     <canvas id="matrix"></canvas>
 
-    <div class="container">
-        <h3>NEXUS DUMP</h3>
+    <div class="painel-card">
+        <div class="title">NEXUS DUMP</div>
         
-        <div class="cat">Combate</div>
-        <div class="opt"><span>AimLock 100%</span><input type="checkbox" onclick="send('AimLock', '0x336371c', '0000A0E3', this.checked)"></div>
+        <div class="category">COMBATE</div>
+        <div class="hack-item">
+            <div class="hack-name">AimLock 100%</div>
+            <label class="switch">
+                <input type="checkbox" id="aimlock" onchange="patcher('aimlock')">
+                <span class="slider"></span>
+            </label>
+        </div>
 
-        <div class="cat">Movimentação</div>
-        <div class="opt"><span>Velocidade Correr</span><input type="checkbox" onclick="send('Speed', '0x6ef16e8', '0000A0E3', this.checked)"></div>
+        <div class="category">MOVIMENTAÇÃO</div>
+        <div class="hack-item">
+            <div class="hack-name">Velocidade Correr</div>
+            <label class="switch">
+                <input type="checkbox" id="velocidade" onchange="patcher('velocidade')">
+                <span class="slider"></span>
+            </label>
+        </div>
 
-        <div class="cat">Visual</div>
-        <div class="opt"><span>Antena Head</span><input type="checkbox" onclick="send('Antena', '0x3357530', '0000A0E3', this.checked)"></div>
+        <div class="category">VISUAL</div>
+        <div class="hack-item">
+            <div class="hack-name">Antena Head</div>
+            <label class="switch">
+                <input type="checkbox" id="antena" onchange="patcher('antena')">
+                <span class="slider"></span>
+            </label>
+        </div>
 
-        <button class="btn-game" onclick="Android.abrirJogo()">INICIAR FREE FIRE</button>
+        <button class="start-btn" onclick="iniciarJogo()">INICIAR FREE FIRE</button>
+        
     </div>
 
     <script>
-        // Matrix Background
-        const canvas = document.getElementById('matrix'), ctx = canvas.getContext('2d');
+        // --- Animação do Fundo Matrix (Ciano) ---
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
         canvas.height = window.innerHeight; canvas.width = window.innerWidth;
-        const drops = Array(Math.floor(canvas.width/16)).fill(1);
-        function draw() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.font = "15px monospace"; ctx.fillStyle = "#004400";
-            drops.forEach((y, i) => {
-                ctx.fillText(Math.floor(Math.random()*2), i*16, y*16);
-                if (y*16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        const characters = "01"; // Usando apenas 0 e 1 como na imagem
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = []; for (let x = 0; x < columns; x++) drops[x] = 1;
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(0, 255, 255, 0.3)"; // Ciano suave no fundo
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
-            });
+            }
         }
-        setInterval(draw, 50);
+        setInterval(drawMatrix, 35);
 
-        // Envia os dados para o Java. O Toast nativo do APK cuidará do resto.
-        function send(name, offset, hex, status) {
-            if (navigator.vibrate) navigator.vibrate(25);
-            
-            if (typeof Android !== 'undefined') {
-                Android.applyPatch(name, offset, hex, status);
+        // --- Comunicação com o App Android ---
+        function patcher(modName) {
+            const isChecked = document.getElementById(modName).checked;
+            console.log(`Mod ${modName}: ${isChecked}`);
+            // Avisa o App Android sobre a mudança (para logs, etc.)
+            if (window.Android && window.Android.applyPatch) {
+                window.Android.applyPatch(modName, "", "", isChecked);
+            }
+        }
+
+        function iniciarJogo() {
+            console.log("Iniciando Jogo...");
+            // Chama a função no App Android para abrir o Free Fire
+            if (window.Android && window.Android.abrirJogo) {
+                window.Android.abrirJogo();
+            } else {
+                alert("App Android não detectado. Isso deve rodar dentro do Mod!");
             }
         }
     </script>
