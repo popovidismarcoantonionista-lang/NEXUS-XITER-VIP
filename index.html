@@ -1,34 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS LOGIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEXUS VIP - AUTH</title>
     <style>
-        body { background: #000; color: #0f0; font-family: monospace; text-align: center; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .box { border: 1px solid #0f0; padding: 30px; border-radius: 15px; box-shadow: 0 0 15px #0f0; }
-        input { background: #000; border: 1px solid #0f0; color: #0f0; padding: 10px; width: 80%; text-align: center; margin-top: 15px; }
-        button { background: #0f0; color: #000; border: none; padding: 10px 20px; margin-top: 20px; font-weight: bold; cursor: pointer; width: 100%; }
+        :root {
+            --neon-green: #00ff41;
+            --bg-dark: rgba(0, 0, 0, 0.9);
+        }
+
+        canvas#matrix { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; 
+        }
+        
+        body { 
+            margin: 0; padding: 0; 
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; font-family: 'Segoe UI', Roboto, sans-serif; 
+            overflow: hidden; color: var(--neon-green); 
+        }
+
+        .auth-container {
+            width: 85%; max-width: 320px; 
+            background: var(--bg-dark);
+            border: 1px solid var(--neon-green);
+            border-radius: 15px; padding: 40px 20px; 
+            text-align: center; position: relative;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 25px rgba(0, 255, 65, 0.2);
+            animation: pulse 2s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { box-shadow: 0 0 20px rgba(0, 255, 65, 0.1); }
+            to { box-shadow: 0 0 35px rgba(0, 255, 65, 0.3); }
+        }
+
+        .logo-title { 
+            font-size: 28px; letter-spacing: 4px; font-weight: 900; 
+            text-shadow: 0 0 15px var(--neon-green); margin-bottom: 5px; 
+        }
+
+        .subtitle {
+            font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+            margin-bottom: 30px; opacity: 0.8;
+        }
+
+        .input-group { position: relative; margin-bottom: 25px; }
+
+        .in-auth { 
+            width: 100%; background: rgba(0, 30, 0, 0.5); 
+            border: 1px solid var(--neon-green); border-radius: 5px; 
+            padding: 15px; color: #fff; text-align: center; 
+            outline: none; box-sizing: border-box;
+            font-size: 16px; transition: 0.3s;
+            font-family: monospace;
+        }
+
+        .in-auth:focus { 
+            background: rgba(0, 50, 0, 0.7);
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+
+        .btn-auth { 
+            width: 100%; background: var(--neon-green); 
+            border: none; border-radius: 5px; padding: 15px; 
+            color: #000; font-weight: bold; font-size: 14px;
+            cursor: pointer; text-transform: uppercase; 
+            transition: 0.3s; box-shadow: 0 5px 15px rgba(0, 255, 65, 0.3);
+        }
+
+        .btn-auth:active { transform: scale(0.95); }
+
+        .footer-text {
+            margin-top: 25px; font-size: 10px; color: #555;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2>NEXUS XITER VIP</h2>
-        <input type="text" id="keyInput" placeholder="DIGITE A KEY">
-        <button onclick="check()">ENTRAR</button>
+    <canvas id="matrix"></canvas>
+
+    <div class="auth-container">
+        <div class="logo-title">NEXUS</div>
+        <div class="subtitle">Secure Authentication</div>
+        
+        <div class="input-group">
+            <input type="text" id="keyInput" class="in-auth" placeholder="PASTE YOUR KEY HERE" autocomplete="off">
+        </div>
+        
+        <button class="btn-auth" onclick="autenticar()">Login System</button>
+        
+        <div class="footer-text">Protected by Nexus Xiter VIP</div>
     </div>
 
     <script>
-        function check() {
-            const k = document.getElementById('keyInput').value.trim();
-            // Aqui você define a key que quiser
-            if (k === "NEXUS-2026-VIP") {
+        // Matrix Background Effect
+        const c = document.getElementById('matrix'), ctx = c.getContext('2d');
+        c.height = window.innerHeight; c.width = window.innerWidth;
+        const letters = "0101010101".split('');
+        const fontSize = 14, columns = c.width / fontSize, drops = [];
+        for (let x = 0; x < columns; x++) drops[x] = 1;
+        function draw() {
+            ctx.fillStyle = 'rgba(0,0,0,0.08)'; ctx.fillRect(0,0,c.width,c.height);
+            ctx.fillStyle = '#003300'; ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 40);
+
+        // Lógica de Redirecionamento
+        function autenticar() {
+            const key = document.getElementById('keyInput').value.trim();
+            if (key === "NEXUS-2026-VIP") {
                 window.location.href = "sucesso.login.html";
             } else {
-                alert("KEY INVÁLIDA!");
+                alert("ACCESS DENIED: Invalid license key.");
             }
         }
     </script>
 </body>
 </html>
-
