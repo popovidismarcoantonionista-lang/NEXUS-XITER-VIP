@@ -3,41 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS VIP</title>
+    <title>NEXUS DUMP</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: monospace; }
         body { background: #000; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         canvas { position: fixed; top: 0; left: 0; z-index: -1; }
-        .card { background: rgba(0, 0, 0, 0.9); border: 2px solid #00ff00; border-radius: 15px; padding: 25px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 0 20px #00ff00; z-index: 10; }
-        h2 { color: #00ff00; text-shadow: 0 0 10px #00ff00; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; background: transparent; border: 1px solid #00ff00; color: #00ff00; border-radius: 5px; margin-bottom: 15px; text-align: center; outline: none; }
-        button { width: 100%; padding: 12px; background: #00ff00; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; color: #fff; border-bottom: 1px solid rgba(0,255,0,0.2); }
-        #panel { display: none; }
-        /* Switch */
+        
+        .card { 
+            background: rgba(0, 0, 0, 0.9); 
+            border: 2px solid #00ffff; 
+            border-radius: 15px; 
+            padding: 25px; 
+            width: 320px; 
+            text-align: center; 
+            box-shadow: 0 0 20px #00ffff; 
+            z-index: 10; 
+        }
+
+        h2 { color: #00ffff; text-shadow: 0 0 10px #00ffff; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; background: transparent; border: 1px solid #00ffff; color: #00ffff; border-radius: 5px; margin-bottom: 15px; text-align: center; outline: none; }
+        button { width: 100%; padding: 12px; background: #00ffff; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        
+        .item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; color: #fff; border-bottom: 1px solid rgba(0,255,255,0.1); }
         .sw { position: relative; width: 40px; height: 20px; }
         .sw input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #333; transition: .4s; border-radius: 20px; }
         .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background: #00ff00; }
+        input:checked + .slider { background: #00ffff; }
         input:checked + .slider:before { transform: translateX(20px); }
+        
+        #panel { display: none; }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
+
     <div id="login" class="card">
         <h2>NEXUS LOGIN</h2>
-        <input type="text" id="keyInput" placeholder="DIGITE SUA KEY">
-        <button onclick="verificar()">LOGAR</button>
+        <input type="text" id="keyInput" placeholder="SUA KEY">
+        <button onclick="verificar()">ENTRAR</button>
     </div>
 
     <div id="panel" class="card">
         <h2>NEXUS DUMP</h2>
-        <div class="item"><span>AimLock 100%</span><label class="sw"><input type="checkbox" onchange="send('AimLock',this.checked)"><span class="slider"></span></label></div>
-        <div class="item"><span>Speed Run</span><label class="sw"><input type="checkbox" onchange="send('Speed',this.checked)"><span class="slider"></span></label></div>
-        <button style="margin-top:20px" onclick="if(window.Android) window.Android.abrirJogo()">ABRIR JOGO</button>
+        <div class="item">
+            <span>AimLock 100%</span>
+            <label class="sw"><input type="checkbox" onchange="send('AimLock', '0x1A2B', '0x99', this.checked)"><span class="slider"></span></label>
+        </div>
+        <div class="item">
+            <span>Velocidade</span>
+            <label class="sw"><input type="checkbox" onchange="send('Speed', '0x2B3C', '0x88', this.checked)"><span class="slider"></span></label>
+        </div>
+        <button style="margin-top:20px" onclick="if(window.Android) window.Android.abrirJogo()">ABRIR FF</button>
     </div>
 
     <script>
@@ -52,28 +71,28 @@
 
         function verificar() {
             const val = document.getElementById('keyInput').value;
-            // Busca exata na pasta 'keys'
+            // Busca na pasta 'keys' exatamente como na sua imagem
             db.ref('keys/' + val).once('value').then((s) => {
                 if(s.exists()) {
                     document.getElementById('login').style.display = 'none';
                     document.getElementById('panel').style.display = 'block';
                 } else {
-                    alert("KEY INVÁLIDA! Verifique se criou 'keys/" + val + "' no Firebase.");
+                    alert("KEY INVÁLIDA!");
                 }
-            }).catch(e => alert("ERRO: " + e.message));
+            }).catch(e => alert("Erro: " + e.message));
         }
 
-        function send(n, s) {
-            if(window.Android) window.Android.applyPatch(n, "0x0", "0x0", s);
+        function send(n, o, h, s) {
+            if(window.Android) window.Android.applyPatch(n, o, h, s);
         }
 
-        // Matrix Effect
+        // Fundo Matrix
         const c=document.getElementById("matrix"), x=c.getContext("2d");
         c.height=window.innerHeight; c.width=window.innerWidth;
         const drops=Array(Math.floor(c.width/14)).fill(1);
         function draw() {
             x.fillStyle="rgba(0,0,0,0.05)"; x.fillRect(0,0,c.width,c.height);
-            x.fillStyle="#00ff00"; x.font="14px monospace";
+            x.fillStyle="#00ffff"; x.font="14px monospace";
             drops.forEach((y,i)=>{
                 x.fillText(Math.floor(Math.random()*2),i*14,y*14);
                 if(y*14>c.height&&Math.random()>0.975) drops[i]=0;
