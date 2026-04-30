@@ -3,178 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS VIP OB53</title>
+    <title>NEXUS VIP V2</title>
     <style>
-        :root {
-            --neon-green: #00ff41;
-            --neon-blue: #00f7ff;
-            --bg-dark: rgba(0, 0, 0, 0.94);
-        }
-
+        :root { --neon: #00ff41; --blue: #00f7ff; --bg: rgba(0, 0, 0, 0.95); }
         canvas#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; }
-        
-        body { 
-            margin: 0; padding: 0; 
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; font-family: 'Segoe UI', sans-serif; 
-            overflow: hidden; color: var(--neon-green); 
-        }
-
-        .panel {
-            width: 85%; max-width: 340px; 
-            background: var(--bg-dark);
-            border-radius: 15px; padding: 25px; 
-            text-align: center; position: relative;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--neon-green);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.15);
-        }
-
-        #mod-ui { display: none; border-color: var(--neon-blue); box-shadow: 0 0 25px rgba(0, 247, 255, 0.2); }
-
-        .title { font-size: 26px; font-weight: 900; letter-spacing: 2px; margin-bottom: 25px; text-shadow: 0 0 10px var(--neon-green); }
-        .title-blue { color: var(--neon-blue); text-shadow: 0 0 15px var(--neon-blue); }
-
-        .cat { 
-            color: var(--neon-blue); font-size: 10px; text-align: left; 
-            margin: 15px 0 8px; padding-left: 8px; 
-            border-left: 2px solid var(--neon-blue); 
-            text-transform: uppercase; font-weight: bold;
-        }
-
-        .in { 
-            width: 100%; background: rgba(0, 30, 0, 0.4); 
-            border: 1px solid var(--neon-green); border-radius: 6px; 
-            padding: 14px; color: #fff; text-align: center; 
-            outline: none; margin-bottom: 20px; box-sizing: border-box;
-            font-size: 16px;
-        }
-        
-        .btn-g { 
-            width: 100%; background: var(--neon-green); 
-            border: none; border-radius: 6px; padding: 14px; 
-            color: #000; font-weight: bold; cursor: pointer; text-transform: uppercase;
-        }
-
-        .btn-launch { 
-            width: 100%; background: var(--neon-blue); 
-            border: none; border-radius: 6px; padding: 14px; 
-            color: #000; font-weight: bold; margin-top: 20px;
-            cursor: pointer; text-transform: uppercase; box-shadow: 0 0 15px var(--neon-blue);
-        }
-
-        .item { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 10px; background: rgba(255, 255, 255, 0.04);
-            margin-bottom: 6px; border-radius: 6px;
-        }
-        .name { color: #e0e0e0; font-size: 13px; font-weight: 500; }
-
-        /* Switch Style */
-        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { 
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; 
-            background: #333; transition: .4s; border-radius: 20px; 
-        }
-        .slider:before { 
-            position: absolute; content: ""; height: 14px; width: 14px; 
-            left: 3px; bottom: 3px; background: #fff; transition: .4s; border-radius: 50%; 
-        }
-        input:checked + .slider { background: var(--neon-blue); }
-        input:checked + .slider:before { transform: translateX(20px); box-shadow: 0 0 8px var(--neon-blue); }
+        body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: sans-serif; color: var(--neon); overflow: hidden; }
+        .panel { width: 85%; max-width: 320px; background: var(--bg); border-radius: 15px; padding: 25px; text-align: center; border: 1px solid var(--neon); box-shadow: 0 0 15px rgba(0,255,65,0.2); }
+        #mod-ui { display: none; border-color: var(--blue); }
+        .title { font-size: 24px; font-weight: 900; margin-bottom: 20px; text-shadow: 0 0 10px var(--neon); }
+        .in { width: 100%; background: #111; border: 1px solid var(--neon); padding: 12px; color: #fff; margin-bottom: 15px; border-radius: 5px; text-align: center; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-g { background: var(--neon); color: #000; }
+        .btn-b { background: var(--blue); color: #000; margin-top: 20px; }
+        .item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(255,255,255,0.05); margin-bottom: 5px; border-radius: 5px; }
+        .switch { position: relative; width: 40px; height: 20px; }
+        .switch input { opacity: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #333; border-radius: 20px; transition: .4s; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background: #fff; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background: var(--blue); }
+        input:checked + .slider:before { transform: translateX(20px); }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
 
     <div id="auth-ui" class="panel">
-        <div class="title">NEXUS VIP</div>
-        <input type="text" id="keyInput" class="in" placeholder="DIGITE A KEY">
-        <button class="btn-g" onclick="fazerLogin()">ENTRAR NO PAINEL</button>
+        <div class="title">NEXUS AUTH</div>
+        <input type="text" id="keyField" class="in" placeholder="DIGITE A KEY">
+        <button class="btn btn-g" onclick="validar()">ENTRAR</button>
     </div>
 
     <div id="mod-ui" class="panel">
-        <div class="title title-blue">DUMP MENU OB53</div>
-        
-        <div class="cat">Combat Functions</div>
-        <div class="item">
-            <span class="name">AimLock Camera</span>
-            <label class="switch">
-                <input type="checkbox" onclick="sendPatch('AimLock', '0x336371c', '0000A0E3', this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="cat">Movement Mods</div>
-        <div class="item">
-            <span class="name">Speed Multiplier</span>
-            <label class="switch">
-                <input type="checkbox" onclick="sendPatch('SpeedMove', '0x68a10dc', '0000A0E3', this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="item">
-            <span class="name">Fast SkyDive</span>
-            <label class="switch">
-                <input type="checkbox" onclick="sendPatch('FlySky', '0x6ef16e8', '0000A0E3', this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="cat">Visual Settings</div>
-        <div class="item">
-            <span class="name">Field of View (FOV)</span>
-            <label class="switch">
-                <input type="checkbox" onclick="sendPatch('FOV', '0x3357530', '0000A0E3', this.checked)">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <button class="btn-launch" onclick="abrirOJogo()">ABRIR FREE FIRE</button>
+        <div class="title" style="color:var(--blue)">DUMP MENU</div>
+        <div class="item"><span>AimLock</span><label class="switch"><input type="checkbox" onclick="patch('Aim', '0x336371c', '0000A0E3', this.checked)"><span class="slider"></span></label></div>
+        <div class="item"><span>Speed</span><label class="switch"><input type="checkbox" onclick="patch('Speed', '0x68a10dc', '0000A0E3', this.checked)"><span class="slider"></span></label></div>
+        <button class="btn btn-b" onclick="abrir()">ABRIR FREE FIRE</button>
     </div>
 
     <script>
-        // Matrix Animation
-        const c = document.getElementById('matrix'), ctx = c.getContext('2d');
-        c.height = window.innerHeight; c.width = window.innerWidth;
-        const drops = Array(Math.floor(c.width/14)).fill(1);
-        function draw() {
-            ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,c.width,c.height);
-            ctx.fillStyle = '#0f0'; ctx.font = '14px monospace';
-            drops.forEach((y, i) => {
-                const text = Math.floor(Math.random()*2);
-                ctx.fillText(text, i*14, y*14);
-                if (y*14 > c.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            });
-        }
-        setInterval(draw, 50);
+        // Matrix
+        const c=document.getElementById('matrix'), x=c.getContext('2d');
+        c.height=window.innerHeight; c.width=window.innerWidth;
+        const d=Array(Math.floor(c.width/14)).fill(1);
+        function draw(){ x.fillStyle='rgba(0,0,0,0.05)'; x.fillRect(0,0,c.width,c.height); x.fillStyle='#0f0'; d.forEach((y,i)=>{ x.fillText(Math.floor(Math.random()*2),i*14,y*14); if(y*14>c.height&&Math.random()>0.975)d[i]=0; d[i]++; }); }
+        setInterval(draw,50);
 
-        // Lógica de Login
-        function fazerLogin() {
-            const k = document.getElementById('keyInput').value.trim().toUpperCase();
-            if (k === "NEXUS") {
+        function validar() {
+            const k = document.getElementById('keyField').value.trim().toUpperCase();
+            if(k === "NEXUS") {
                 document.getElementById('auth-ui').style.display = 'none';
                 document.getElementById('mod-ui').style.display = 'block';
-            } else {
-                alert("ACESSO NEGADO: Key Inválida");
-            }
+            } else { alert("KEY INVÁLIDA!"); }
         }
-
-        // Comunicação com o Android (Sketchware)
-        function sendPatch(name, offset, hex, isActive) {
-            if (typeof Android !== "undefined") {
-                // AGORA ENVIA 4 PARÂMETROS: nome, offset, hex e o estado (true/false)
-                Android.applyPatch(name, offset, hex, isActive);
-            }
-        }
-
-        function abrirOJogo() {
-            if (typeof Android !== "undefined") {
-                Android.abrirJogo();
-            }
-        }
+        function patch(n, o, h, s) { if(typeof Android !== 'undefined') Android.applyPatch(n, o, h, s); }
+        function abrir() { if(typeof Android !== 'undefined') Android.abrirJogo(); }
     </script>
 </body>
 </html>
