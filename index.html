@@ -5,49 +5,131 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NEXUS VIP - LOGIN</title>
     <style>
-        :root { --neon-green: #00ff41; --bg-dark: rgba(0, 0, 0, 0.9); }
-        canvas#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; }
-        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Courier New', monospace; overflow: hidden; color: var(--neon-green); }
-        .auth-container { width: 85%; max-width: 320px; background: var(--bg-dark); border: 2px solid var(--neon-green); border-radius: 5px; padding: 40px 20px; text-align: center; backdrop-filter: blur(10px); box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); }
-        .logo-title { font-size: 30px; letter-spacing: 5px; font-weight: bold; text-shadow: 0 0 10px var(--neon-green); margin-bottom: 5px; }
-        .subtitle { font-size: 10px; text-transform: uppercase; margin-bottom: 30px; opacity: 0.7; }
-        .in-auth { width: 100%; background: rgba(0, 20, 0, 0.8); border: 1px solid var(--neon-green); border-radius: 3px; padding: 15px; color: #fff; text-align: center; outline: none; box-sizing: border-box; margin-bottom: 20px; }
-        .btn-auth { width: 100%; background: var(--neon-green); border: none; padding: 15px; color: #000; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        .btn-auth:active { transform: scale(0.95); }
+        :root { 
+            --neon-green: #00ff41; 
+            --bg-dark: rgba(0, 0, 0, 0.9); 
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        canvas#matrix { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: -1; background: #000; 
+        }
+
+        body { 
+            margin: 0; padding: 0; display: flex; 
+            justify-content: center; align-items: center; 
+            min-height: 100vh; font-family: 'Segoe UI', sans-serif; 
+            overflow: hidden; color: var(--neon-green); 
+        }
+
+        .auth-container { 
+            width: 85%; max-width: 320px; 
+            background: var(--bg-dark); 
+            border: 2px solid var(--neon-green); 
+            border-radius: 15px; 
+            padding: 40px 25px; 
+            text-align: center; 
+            backdrop-filter: blur(10px); 
+            box-shadow: 0 0 25px rgba(0, 255, 65, 0.3), inset 0 0 10px rgba(0, 255, 65, 0.2); 
+        }
+
+        .logo-title { 
+            font-size: 32px; letter-spacing: 6px; 
+            font-weight: 900; text-shadow: 0 0 15px var(--neon-green); 
+            margin-bottom: 5px; color: #fff;
+        }
+
+        .subtitle { 
+            font-size: 10px; text-transform: uppercase; 
+            margin-bottom: 35px; opacity: 0.8; letter-spacing: 2px;
+        }
+
+        /* Input idêntico à imagem enviada */
+        .in-auth { 
+            width: 100%; background: rgba(0, 0, 0, 0.6); 
+            border: 1.5px solid var(--neon-green); 
+            border-radius: 5px; padding: 16px; 
+            color: #fff; text-align: center; 
+            outline: none; margin-bottom: 25px;
+            font-size: 14px; font-weight: bold;
+        }
+
+        .in-auth::placeholder { color: rgba(255,255,255,0.3); font-weight: normal; }
+
+        /* Botão idêntico à imagem enviada */
+        .btn-auth { 
+            width: 100%; background: var(--neon-green); 
+            border: none; padding: 18px; 
+            color: #000; font-weight: 900; 
+            font-size: 14px; border-radius: 5px; 
+            cursor: pointer; text-transform: uppercase; 
+            box-shadow: 0 0 20px var(--neon-green); 
+            transition: 0.2s;
+        }
+
+        .btn-auth:active { transform: scale(0.96); opacity: 0.9; }
+
+        .footer { margin-top: 25px; font-size: 9px; opacity: 0.5; letter-spacing: 1px; }
     </style>
 </head>
 <body oncontextmenu="return false;">
     <canvas id="matrix"></canvas>
+
     <div class="auth-container">
         <div class="logo-title">NEXUS</div>
         <div class="subtitle">SISTEMA DE AUTENTICAÇÃO</div>
-        <input type="password" id="keyInput" class="in-auth" placeholder="COLE SUA KEY AQUI">
-        <button class="btn-auth" onclick="autenticar()">LOGAR NO MOD</button>
+        
+        <input type="text" id="keyInput" class="in-auth" placeholder="COLE SUA KEY AQUI" spellcheck="false">
+        
+        <button class="btn-auth" onclick="iniciarLogin()">LOGAR NO MOD</button>
+        
+        <div class="footer">TERMINAL ACCESS v2.0.26</div>
     </div>
+
     <script>
+        // Efeito Matrix Suave
         const canvas = document.getElementById('matrix'), ctx = canvas.getContext('2d');
         canvas.height = window.innerHeight; canvas.width = window.innerWidth;
-        const characters = "01", fontSize = 16, columns = canvas.width / fontSize, drops = Array(Math.floor(columns)).fill(1);
-        function draw() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.font = fontSize + "px monospace"; ctx.fillStyle = "#00ff41";
-            for (let i = 0; i < drops.length; i++) {
-                ctx.fillText(characters.charAt(Math.floor(Math.random() * 2)), i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
-        }
-        setInterval(draw, 40);
+        const columns = Math.floor(canvas.width / 16);
+        const drops = Array(columns).fill(1);
 
-        function autenticar() {
+        function draw() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "15px monospace"; ctx.fillStyle = "#004400";
+            drops.forEach((y, i) => {
+                const text = Math.floor(Math.random() * 2);
+                ctx.fillText(text, i * 16, y * 16);
+                if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }
+        setInterval(draw, 50);
+
+        // Função que se comunica com o Firebase via Java do APK
+        function iniciarLogin() {
             const key = document.getElementById('keyInput').value.trim();
-            if (key === "NEXUS-2026-VIP") {
-                localStorage.setItem("nexus_vip_session", "active"); // Cria a sessão
-                window.location.href = "sucesso.login.html";
+            
+            if (key === "") {
+                alert("ERRO: Campo de Key vazio!");
+                return;
+            }
+
+            // Envia para o comando Java: Android.verificarKey(key)
+            if (typeof Android !== 'undefined') {
+                Android.verificarKey(key);
             } else {
-                alert("CHAVE INVÁLIDA!");
+                // Caso teste no PC
+                console.log("Comando enviado: " + key);
+                alert("Ambiente Android não detectado.");
             }
         }
+        
+        // Atalho tecla Enter
+        document.getElementById('keyInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') iniciarLogin();
+        });
     </script>
 </body>
 </html>
