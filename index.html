@@ -8,20 +8,40 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: monospace; }
         body { background: #000; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         canvas { position: fixed; top: 0; left: 0; z-index: -1; }
-        .card { background: rgba(0, 0, 0, 0.95); border: 2px solid #00ffff; border-radius: 15px; padding: 25px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 0 20px #00ffff; z-index: 10; }
-        h2 { color: #00ffff; text-shadow: 0 0 10px #00ffff; margin-bottom: 10px; letter-spacing: 2px; }
-        .expiry-info { color: #008888; font-size: 10px; margin-bottom: 20px; }
+        
+        .card { 
+            background: rgba(0, 0, 0, 0.95); 
+            border: 2px solid #00ffff; 
+            border-radius: 15px; 
+            padding: 20px; 
+            width: 90%; 
+            max-width: 380px; 
+            text-align: center; 
+            box-shadow: 0 0 25px #00ffff; 
+            z-index: 10;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        h2 { color: #00ffff; text-shadow: 0 0 10px #00ffff; margin-bottom: 5px; letter-spacing: 2px; }
+        .expiry-info { color: #008888; font-size: 10px; margin-bottom: 15px; }
+        
         input { width: 100%; padding: 12px; background: transparent; border: 1px solid #00ffff; color: #00ffff; border-radius: 5px; margin-bottom: 15px; text-align: center; outline: none; }
-        .btn-main { width: 100%; padding: 12px; background: #00ffff; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 10px #00ffff; }
-        .category { color: #00ff00; font-size: 10px; text-align: left; margin: 15px 0 5px; border-bottom: 1px solid rgba(0,255,0,0.2); }
-        .item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; color: #fff; font-size: 14px; }
+        .btn-main { width: 100%; padding: 12px; background: #00ffff; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+
+        .category { color: #00ff00; font-size: 10px; text-align: left; margin: 12px 0 5px; border-bottom: 1px solid rgba(0,255,0,0.2); text-transform: uppercase; }
+        .item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; color: #fff; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
         .switch { position: relative; width: 40px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #333; transition: .4s; border-radius: 20px; }
         .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background: #fff; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background: #00ffff; }
+        input:checked + .slider { background: #00ffff; box-shadow: 0 0 8px #00ffff; }
         input:checked + .slider:before { transform: translateX(20px); }
+
         #panel { display: none; }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-thumb { background: #00ffff; }
     </style>
 </head>
 <body>
@@ -30,50 +50,53 @@
     <div id="login" class="card">
         <h2>NEXUS LOGIN</h2>
         <div class="expiry-info" id="data_view"></div>
-        <input type="text" id="key_input" placeholder="DIGITE SUA KEY">
+        <input type="text" id="key_input" placeholder="DIGITE SUA KEY FIXA">
         <button class="btn-main" onclick="verificar()">ENTRAR</button>
     </div>
 
     <div id="panel" class="card">
         <h2>NEXUS DUMP</h2>
-        <div class="category">COMBATE</div>
-        <div class="item"><span>AimLock 100%</span><label class="switch"><input type="checkbox" onchange="patch('AimLock','0x123456','0x0000C0BF',this.checked)"><span class="slider"></span></label></div>
+        
+        <div class="category">COMBATE (OFFSETS)</div>
+        <div class="item"><span>AimLock 100%</span><label class="switch"><input type="checkbox" onchange="patch('AimLock','0x1234567','0x0000C0BF',this.checked)"><span class="slider"></span></label></div>
+        <div class="item"><span>Aimbot Tiro</span><label class="switch"><input type="checkbox" onchange="patch('Aimbot','0x1234568','0x112233',this.checked)"><span class="slider"></span></label></div>
+        <div class="item"><span>No Recoil</span><label class="switch"><input type="checkbox" onchange="patch('No Recoil','0x1234569','0x00000000',this.checked)"><span class="slider"></span></label></div>
+
         <div class="category">MOVIMENTAÇÃO</div>
-        <div class="item"><span>Velocidade</span><label class="switch"><input type="checkbox" onchange="patch('Velocidade','0x234567','0x40A00000',this.checked)"><span class="slider"></span></label></div>
-        <button class="btn-main" style="margin-top:20px" onclick="if(window.Android) window.Android.abrirJogo()">ABRIR FREE FIRE</button>
+        <div class="item"><span>Velocidade Correr</span><label class="switch"><input type="checkbox" onchange="patch('Velocidade','0x2345678','0x40A00000',this.checked)"><span class="slider"></span></label></div>
+        <div class="item"><span>Pulo Alto</span><label class="switch"><input type="checkbox" onchange="patch('Pulo','0x2345679','0x41200000',this.checked)"><span class="slider"></span></label></div>
+        <div class="item"><span>Fly Hacker</span><label class="switch"><input type="checkbox" onchange="patch('Fly','0x2345680','0x3F800000',this.checked)"><span class="slider"></span></label></div>
+
+        <div class="category">VISUAL & MAPA</div>
+        <div class="item"><span>Antena Head</span><label class="switch"><input type="checkbox" onchange="patch('Antena','0x3456789','0x3F800000',this.checked)"><span class="slider"></span></label></div>
+        <div class="item"><span>Corpo Branco</span><label class="switch"><input type="checkbox" onchange="patch('Branco','0x3456790','0x1',this.checked)"><span class="slider"></span></label></div>
+        <div class="item"><span>Remover Árvores</span><label class="switch"><input type="checkbox" onchange="patch('Map Clean','0x3456791','0x0',this.checked)"><span class="slider"></span></label></div>
+
+        <button class="btn-main" style="margin-top:20px" onclick="if(window.Android) window.Android.abrirJogo()">INICIAR JOGO</button>
     </div>
 
     <script>
-        // CONFIGURAÇÃO DA KEY FIXA E TEMPO
-        const KEY_CORRETA = "NEXUS-VIPS"; // Sua Key fixa
-        const DATA_EXPIRACAO = "2026-05-30"; // Formato: Ano-Mês-Dia
+        const KEY_CORRETA = "NEXUS-VIPS"; 
+        const DATA_EXPIRACAO = "2026-05-30"; 
 
-        document.getElementById('data_view').innerText = "EXPIRA EM: " + DATA_EXPIRACAO;
+        document.getElementById('data_view').innerText = "VÁLIDO ATÉ: " + DATA_EXPIRACAO;
 
         function verificar() {
-            const keyDigitada = document.getElementById('key_input').value;
+            const val = document.getElementById('key_input').value;
             const hoje = new Date();
             const expira = new Date(DATA_EXPIRACAO);
 
-            if (hoje > expira) {
-                alert("ESTA KEY EXPIROU! PROCURE O SUPORTE.");
-                return;
-            }
-
-            if (keyDigitada === KEY_CORRETA) {
+            if (hoje > expira) { alert("Sua Key expirou!"); return; }
+            if (val === KEY_CORRETA) {
                 document.getElementById('login').style.display = 'none';
                 document.getElementById('panel').style.display = 'block';
-                if(window.Android) window.Android.loginSucesso();
-            } else {
-                alert("KEY INCORRETA!");
-            }
+            } else { alert("Key incorreta!"); }
         }
 
         function patch(n, o, h, s) {
             if(window.Android) window.Android.applyPatch(n, o, h, s);
         }
 
-        // Fundo Matrix
         const c=document.getElementById("matrix"), x=c.getContext("2d");
         c.height=window.innerHeight; c.width=window.innerWidth;
         const drops=Array(Math.floor(c.width/14)).fill(1);
