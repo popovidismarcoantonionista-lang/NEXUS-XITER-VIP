@@ -1,135 +1,118 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS VIP - LOGIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS VIP LOGIN</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
     <style>
-        :root { 
-            --neon-green: #00ff41; 
-            --bg-dark: rgba(0, 0, 0, 0.9); 
+        body {
+            background-color: #000;
+            color: #0f0; /* Estilo Matrix */
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
         }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        canvas#matrix { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            z-index: -1; background: #000; 
+        .login-box {
+            border: 1px solid #0f0;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 15px #0f0;
         }
-
-        body { 
-            margin: 0; padding: 0; display: flex; 
-            justify-content: center; align-items: center; 
-            min-height: 100vh; font-family: 'Segoe UI', sans-serif; 
-            overflow: hidden; color: var(--neon-green); 
+        input {
+            background: #000;
+            border: 1px solid #0f0;
+            color: #0f0;
+            padding: 10px;
+            margin: 10px 0;
+            width: 80%;
+            outline: none;
         }
-
-        .auth-container { 
-            width: 85%; max-width: 320px; 
-            background: var(--bg-dark); 
-            border: 2px solid var(--neon-green); 
-            border-radius: 15px; 
-            padding: 40px 25px; 
-            text-align: center; 
-            backdrop-filter: blur(10px); 
-            box-shadow: 0 0 25px rgba(0, 255, 65, 0.3), inset 0 0 10px rgba(0, 255, 65, 0.2); 
+        button {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
         }
-
-        .logo-title { 
-            font-size: 32px; letter-spacing: 6px; 
-            font-weight: 900; text-shadow: 0 0 15px var(--neon-green); 
-            margin-bottom: 5px; color: #fff;
-        }
-
-        .subtitle { 
-            font-size: 10px; text-transform: uppercase; 
-            margin-bottom: 35px; opacity: 0.8; letter-spacing: 2px;
-        }
-
-        /* Input idêntico à imagem enviada */
-        .in-auth { 
-            width: 100%; background: rgba(0, 0, 0, 0.6); 
-            border: 1.5px solid var(--neon-green); 
-            border-radius: 5px; padding: 16px; 
-            color: #fff; text-align: center; 
-            outline: none; margin-bottom: 25px;
-            font-size: 14px; font-weight: bold;
-        }
-
-        .in-auth::placeholder { color: rgba(255,255,255,0.3); font-weight: normal; }
-
-        /* Botão idêntico à imagem enviada */
-        .btn-auth { 
-            width: 100%; background: var(--neon-green); 
-            border: none; padding: 18px; 
-            color: #000; font-weight: 900; 
-            font-size: 14px; border-radius: 5px; 
-            cursor: pointer; text-transform: uppercase; 
-            box-shadow: 0 0 20px var(--neon-green); 
-            transition: 0.2s;
-        }
-
-        .btn-auth:active { transform: scale(0.96); opacity: 0.9; }
-
-        .footer { margin-top: 25px; font-size: 9px; opacity: 0.5; letter-spacing: 1px; }
+        button:hover { background: #0a0; }
+        .status { margin-top: 15px; font-size: 0.8em; }
     </style>
 </head>
-<body oncontextmenu="return false;">
-    <canvas id="matrix"></canvas>
+<body>
 
-    <div class="auth-container">
-        <div class="logo-title">NEXUS</div>
-        <div class="subtitle">SISTEMA DE AUTENTICAÇÃO</div>
-        
-        <input type="text" id="keyInput" class="in-auth" placeholder="COLE SUA KEY AQUI" spellcheck="false">
-        
-        <button class="btn-auth" onclick="iniciarLogin()">LOGAR NO MOD</button>
-        
-        <div class="footer">TERMINAL ACCESS v2.0.26</div>
+    <div class="login-box">
+        <h2>NEXUS VIP</h2>
+        <p>INSIRA SUA KEY</p>
+        <input type="text" id="input_key" placeholder="CHAVE DE ACESSO">
+        <br>
+        <button onclick="verificarAcesso()">ENTRAR NO SISTEMA</button>
+        <div id="status" class="status">AGUARDANDO...</div>
     </div>
 
     <script>
-        // Efeito Matrix Suave
-        const canvas = document.getElementById('matrix'), ctx = canvas.getContext('2d');
-        canvas.height = window.innerHeight; canvas.width = window.innerWidth;
-        const columns = Math.floor(canvas.width / 16);
-        const drops = Array(columns).fill(1);
+        // CONFIGURAÇÕES DO SEU FIREBASE
+        // Pegue esses dados no Console do Firebase > Configurações do Projeto > Seus Apps > Web App (ícone </>)
+        const firebaseConfig = {
+            apiKey: "SUA_API_KEY_AQUI",
+            databaseURL: "SUA_URL_DO_DATABASE_AQUI",
+            projectId: "SEU_PROJECT_ID",
+            storageBucket: "SEU_STORAGE_BUCKET",
+            messagingSenderId: "SEU_SENDER_ID",
+            appId: "SEU_APP_ID"
+        };
 
-        function draw() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.font = "15px monospace"; ctx.fillStyle = "#004400";
-            drops.forEach((y, i) => {
-                const text = Math.floor(Math.random() * 2);
-                ctx.fillText(text, i * 16, y * 16);
-                if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            });
-        }
-        setInterval(draw, 50);
+        // Inicializa o Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-        // Função que se comunica com o Firebase via Java do APK
-        function iniciarLogin() {
-            const key = document.getElementById('keyInput').value.trim();
-            
-            if (key === "") {
-                alert("ERRO: Campo de Key vazio!");
+        function verificarAcesso() {
+            const keyDigitada = document.getElementById("input_key").value;
+            const statusDiv = document.getElementById("status");
+
+            if (keyDigitada === "") {
+                statusDiv.innerHTML = "ERRO: DIGITE ALGO";
                 return;
             }
 
-            // Envia para o comando Java: Android.verificarKey(key)
-            if (typeof Android !== 'undefined') {
-                Android.verificarKey(key);
-            } else {
-                // Caso teste no PC
-                console.log("Comando enviado: " + key);
-                alert("Ambiente Android não detectado.");
-            }
+            statusDiv.innerHTML = "VERIFICANDO...";
+
+            // Consulta o nó 'keys' no seu banco de dados
+            // Ele vai procurar por: keys/SUA_KEY
+            database.ref('keys/' + keyDigitada).once('value')
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        statusDiv.innerHTML = "ACESSO PERMITIDO!";
+                        
+                        // 1. Avisa o App Android (Sketchware) que o login deu certo
+                        if (window.Android && window.Android.loginSucesso) {
+                            window.Android.loginSucesso();
+                        }
+
+                        // 2. Redireciona para a página do Painel (sucesso)
+                        setTimeout(() => {
+                            window.location.href = "sucesso.login.html";
+                        }, 1000);
+                        
+                    } else {
+                        statusDiv.innerHTML = "ERRO: KEY INVÁLIDA";
+                        alert("KEY NÃO ENCONTRADA NO SISTEMA!");
+                    }
+                })
+                .catch((error) => {
+                    statusDiv.innerHTML = "ERRO DE CONEXÃO";
+                    console.error(error);
+                });
         }
-        
-        // Atalho tecla Enter
-        document.getElementById('keyInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') iniciarLogin();
-        });
     </script>
 </body>
 </html>
