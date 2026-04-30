@@ -3,76 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS VIP - MATRIX</title>
+    <title>NEXUS DUMP VIP</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; }
-        body { background: #000; height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: monospace; }
+        body { background: #000; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         canvas { position: fixed; top: 0; left: 0; z-index: -1; }
-
-        .card {
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid #00ffff;
-            border-radius: 15px;
-            padding: 25px;
-            width: 85%;
-            max-width: 380px;
-            text-align: center;
-            box-shadow: 0 0 20px #00ffff;
-            z-index: 10;
-        }
-
-        .title { color: #00ffff; font-size: 1.5em; text-shadow: 0 0 10px #00ffff; margin-bottom: 20px; font-weight: bold; }
-        input { width: 100%; padding: 12px; background: transparent; border: 1px solid #00ffff; color: #00ffff; border-radius: 5px; margin-bottom: 20px; text-align: center; outline: none; }
-        button { width: 100%; padding: 15px; background: #00ffff; color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-
-        /* Estilo Painel de Hacks */
-        .hack-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(0, 255, 255, 0.1); }
-        .hack-name { color: #fff; font-size: 0.9em; }
-        .category { color: #00ff00; font-size: 0.7em; text-align: left; margin-top: 10px; border-bottom: 1px solid rgba(0,255,0,0.2); }
-
-        /* Switch Redondo */
-        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .card { background: rgba(0, 0, 0, 0.9); border: 2px solid #00ffff; border-radius: 15px; padding: 25px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 0 20px #00ffff; z-index: 10; }
+        h2 { color: #00ffff; text-shadow: 0 0 10px #00ffff; margin-bottom: 20px; letter-spacing: 2px; }
+        input { width: 100%; padding: 12px; background: transparent; border: 1px solid #00ffff; color: #00ffff; border-radius: 5px; margin-bottom: 15px; text-align: center; outline: none; }
+        button { width: 100%; padding: 12px; background: #00ffff; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 10px #00ffff; }
+        .category { color: #00ff00; font-size: 11px; text-align: left; margin: 15px 0 5px; border-bottom: 1px solid rgba(0,255,0,0.2); }
+        .item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; color: #fff; font-size: 14px; }
+        .switch { position: relative; width: 40px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 20px; }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: #00ffff; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #333; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background: #fff; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background: #00ffff; }
         input:checked + .slider:before { transform: translateX(20px); }
-
-        #painel { display: none; }
+        #panel { display: none; }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
-
     <div id="login" class="card">
-        <div class="title">NEXUS LOGIN</div>
-        <input type="text" id="input_key" placeholder="INSIRA SUA KEY">
-        <button onclick="verificar()">LOGAR</button>
+        <h2>NEXUS LOGIN</h2>
+        <input type="text" id="key" placeholder="SUA KEY AQUI">
+        <button onclick="logar()">ENTRAR</button>
     </div>
-
-    <div id="painel" class="card">
-        <div class="title">NEXUS DUMP</div>
-        
+    <div id="panel" class="card">
+        <h2>NEXUS DUMP</h2>
         <div class="category">COMBATE</div>
-        <div class="hack-item">
-            <span class="hack-name">AimLock 100%</span>
-            <label class="switch"><input type="checkbox" onchange="send('AimLock', '0x123456', '0x0000C0BF', this.checked)"><span class="slider"></span></label>
-        </div>
-
+        <div class="item"><span>AimLock 100%</span><label class="switch"><input type="checkbox" onchange="patch('AimLock','0x123','0xABC',this.checked)"><span class="slider"></span></label></div>
         <div class="category">MOVIMENTAÇÃO</div>
-        <div class="hack-item">
-            <span class="hack-name">Velocidade</span>
-            <label class="switch"><input type="checkbox" onchange="send('Speed', '0x234567', '0x40A00000', this.checked)"><span class="slider"></span></label>
-        </div>
-
-        <button style="margin-top:20px;" onclick="if(window.Android) window.Android.abrirJogo()">INICIAR JOGO</button>
+        <div class="item"><span>Velocidade</span><label class="switch"><input type="checkbox" onchange="patch('Speed','0x456','0xDEF',this.checked)"><span class="slider"></span></label></div>
+        <button style="margin-top:20px" onclick="if(window.Android) window.Android.abrirJogo()">INICIAR JOGO</button>
     </div>
-
     <script>
-        // Configuração do teu Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyA0Q2b-zUJRT7VBrsKRdsln7UR9hLy_YKY",
             databaseURL: "https://alphagen-p9d3i-default-rtdb.firebaseio.com",
@@ -80,35 +48,24 @@
             appId: "1:391202812925:android:f4498042d3c1db3c99df94"
         };
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        function verificar() {
-            const key = document.getElementById("input_key").value;
-            database.ref('keys/' + key).once('value').then((snap) => {
-                if (snap.exists()) {
-                    document.getElementById("login").style.display = "none";
-                    document.getElementById("painel").style.display = "block";
-                    if(window.Android) window.Android.loginSucesso();
-                } else { alert("KEY INVÁLIDA!"); }
+        const db = firebase.database();
+        function logar() {
+            const k = document.getElementById('key').value;
+            db.ref('keys/'+k).once('value').then(s => {
+                if(s.exists()){ document.getElementById('login').style.display='none'; document.getElementById('panel').style.display='block'; }
+                else { alert("KEY INVÁLIDA!"); }
             });
         }
-
-        function send(n, o, h, s) {
-            if(window.Android) window.Android.applyPatch(n, o, h, s);
-        }
-
-        // Matrix Effect
-        const c = document.getElementById("matrix");
-        const x = c.getContext("2d");
-        c.height = window.innerHeight; c.width = window.innerWidth;
-        const chars = "01";
-        const drops = Array(Math.floor(c.width/14)).fill(1);
+        function patch(n,o,h,s) { if(window.Android) window.Android.applyPatch(n,o,h,s); }
+        const c=document.getElementById("matrix"), x=c.getContext("2d");
+        c.height=window.innerHeight; c.width=window.innerWidth;
+        const drops=Array(Math.floor(c.width/14)).fill(1);
         function draw() {
-            x.fillStyle = "rgba(0,0,0,0.05)"; x.fillRect(0,0,c.width,c.height);
-            x.fillStyle = "#00ffff"; x.font = "14px monospace";
-            drops.forEach((y, i) => {
-                x.fillText(chars[Math.floor(Math.random()*chars.length)], i*14, y*14);
-                if(y*14 > c.height && Math.random() > 0.975) drops[i] = 0;
+            x.fillStyle="rgba(0,0,0,0.05)"; x.fillRect(0,0,c.width,c.height);
+            x.fillStyle="#00ffff"; x.font="14px monospace";
+            drops.forEach((y,i)=>{
+                x.fillText(Math.floor(Math.random()*2),i*14,y*14);
+                if(y*14>c.height&&Math.random()>0.975) drops[i]=0;
                 drops[i]++;
             });
         }
