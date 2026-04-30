@@ -2,133 +2,175 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS VIP LOGIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEXUS MOD MENU</title>
     <style>
-        /* Efeito Matrix */
+        :root {
+            --neon-green: #00FF00;
+            --neon-blue: #00f7ff;
+            --bg-panel: rgba(0, 15, 0, 0.95);
+        }
+
         body { 
             background-color: black; 
             margin: 0; 
             overflow: hidden; 
-            font-family: 'Courier New', Courier, monospace; 
-        }
-        canvas { 
-            display: block; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
+            font-family: 'Courier New', monospace; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        /* Painel de Login */
-        .login-box {
-            position: absolute; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%);
-            background: rgba(0, 15, 0, 0.9); 
-            padding: 30px; 
-            border: 2px solid #00FF00;
+        canvas { position: absolute; top: 0; left: 0; z-index: 1; }
+
+        /* Painel Principal */
+        .mod-box {
+            position: relative;
+            background: var(--bg-panel); 
+            padding: 20px; 
+            border: 2px solid var(--neon-blue);
             text-align: center; 
-            color: #00FF00; 
-            box-shadow: 0 0 20px #00FF00; 
+            color: white; 
+            box-shadow: 0 0 25px var(--neon-blue); 
             z-index: 10;
             border-radius: 15px;
-            width: 280px;
+            width: 300px;
         }
 
         h2 { 
-            margin-bottom: 20px; 
-            letter-spacing: 2px; 
-            text-shadow: 0 0 10px #00FF00; 
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+            margin: 0 0 20px 0;
+            letter-spacing: 2px;
         }
 
-        input { 
-            background: black; 
-            border: 1px solid #00FF00; 
-            color: #00FF00; 
-            padding: 12px; 
-            margin-top: 10px; 
-            width: 90%; 
-            text-align: center;
-            outline: none;
-            font-weight: bold;
+        .category {
+            color: var(--neon-green);
+            font-size: 0.7rem;
+            text-align: left;
+            margin: 15px 0 5px;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+            text-transform: uppercase;
         }
 
-        button {
-            background: #00FF00; 
+        /* Linha de Opção */
+        .option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .option-name { font-size: 14px; color: #eee; }
+
+        /* Switch Toggle */
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333;
+            transition: .4s; border-radius: 20px;
+        }
+        .slider:before {
+            position: absolute; content: "";
+            height: 14px; width: 14px;
+            left: 3px; bottom: 3px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--neon-blue); }
+        input:checked + .slider:before { transform: translateX(20px); box-shadow: 0 0 10px var(--neon-blue); }
+
+        button.launch-btn {
+            background: var(--neon-blue); 
             color: black; 
             border: none; 
             padding: 12px;
-            margin-top: 25px; 
+            margin-top: 20px; 
             cursor: pointer; 
             font-weight: bold;
             width: 100%;
+            border-radius: 8px;
             text-transform: uppercase;
-            transition: 0.3s;
-        }
-
-        button:hover { 
-            background: #008800; 
-            color: white; 
-            box-shadow: 0 0 15px #00FF00;
+            box-shadow: 0 0 15px var(--neon-blue);
         }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
 
-    <div class="login-box">
-        <h2>NEXUS XITER VIP</h2>
-        <p style="font-size: 0.8rem;">SISTEMA DE AUTENTICAÇÃO</p>
-        <input type="text" id="keyInput" placeholder="COLE SUA KEY">
-        <br>
-        <button onclick="checkKey()">LOGAR NO MOD</button>
+    <div class="mod-box">
+        <h2>NEXUS DUMP</h2>
+        
+        <div class="category">Combate</div>
+        <div class="option">
+            <span class="option-name">AimLock 100%</span>
+            <label class="switch">
+                <input type="checkbox" onclick="sendPatch('AimLock', '0x336371c', '0000A0E3', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="category">Movimentação</div>
+        <div class="option">
+            <span class="option-name">Velocidade Correr</span>
+            <label class="switch">
+                <input type="checkbox" onclick="sendPatch('Speed', '0x68a10dc', '0000A0E3', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="category">Visual</div>
+        <div class="option">
+            <span class="option-name">Antena Head</span>
+            <label class="switch">
+                <input type="checkbox" onclick="sendPatch('Antena', '0x3357530', '0000A0E3', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <button class="launch-btn" onclick="abrirJogo()">INICIAR FREE FIRE</button>
     </div>
 
     <script>
-        // Configuração do Efeito Matrix
+        // Matrix Effect
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+        const letters = "01010101";
         const fontSize = 16;
         const columns = canvas.width / fontSize;
         const drops = Array(Math.floor(columns)).fill(1);
 
         function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#0F0';
+            ctx.fillStyle = '#003300';
             ctx.font = fontSize + 'px arial';
-            for (let i = 0; i < drops.length; i++) {
+            drops.forEach((y, i) => {
                 const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                ctx.fillText(text, i * fontSize, y * fontSize);
+                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
-            }
+            });
         }
-        setInterval(draw, 35);
+        setInterval(draw, 50);
 
-        // Função de Verificação de Key
-        function checkKey() {
-            const key = document.getElementById('keyInput').value.trim();
-            
-            // KEY DEFINIDA
-            if (key === "NEXUS-2026-VIP") {
-                // Redireciona para o arquivo de sucesso que o App está vigiando
-                window.location.href = "sucesso.login.html";
-            } else {
-                alert("KEY INVÁLIDA! ENTRE EM CONTATO COM O SUPORTE.");
+        // FUNÇÕES DE COMUNICAÇÃO COM O ANDROID (SKETCHWARE)
+        function sendPatch(name, offset, hex, isActive) {
+            if (typeof Android !== "undefined") {
+                Android.applyPatch(name, offset, hex, isActive);
             }
         }
 
-        // Ajustar tamanho do canvas se a tela girar
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+        function abrirJogo() {
+            if (typeof Android !== "undefined") {
+                Android.abrirJogo();
+            }
+        }
     </script>
 </body>
 </html>
+
