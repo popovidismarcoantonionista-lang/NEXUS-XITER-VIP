@@ -11,7 +11,7 @@
     <style>
         body {
             background-color: #000;
-            color: #0f0; /* Estilo Matrix */
+            color: #0f0;
             font-family: 'Courier New', Courier, monospace;
             display: flex;
             flex-direction: column;
@@ -22,53 +22,56 @@
         }
         .login-box {
             border: 1px solid #0f0;
-            padding: 20px;
+            padding: 30px;
             text-align: center;
-            box-shadow: 0 0 15px #0f0;
+            box-shadow: 0 0 20px #0f0;
+            border-radius: 10px;
         }
         input {
             background: #000;
             border: 1px solid #0f0;
             color: #0f0;
-            padding: 10px;
-            margin: 10px 0;
-            width: 80%;
+            padding: 12px;
+            margin: 15px 0;
+            width: 85%;
             outline: none;
+            text-align: center;
         }
         button {
             background: #0f0;
             color: #000;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 25px;
             cursor: pointer;
             font-weight: bold;
             width: 100%;
+            text-transform: uppercase;
         }
         button:hover { background: #0a0; }
-        .status { margin-top: 15px; font-size: 0.8em; }
+        .status { margin-top: 15px; font-size: 0.9em; color: #fff; }
     </style>
 </head>
 <body>
 
     <div class="login-box">
-        <h2>NEXUS VIP</h2>
-        <p>INSIRA SUA KEY</p>
-        <input type="text" id="input_key" placeholder="CHAVE DE ACESSO">
+        <h2 style="margin-bottom: 5px;">NEXUS VIP</h2>
+        <p style="font-size: 0.8em;">SISTEMA DE VERIFICAÇÃO</p>
+        <input type="text" id="input_key" placeholder="DIGITE SUA KEY">
         <br>
-        <button onclick="verificarAcesso()">ENTRAR NO SISTEMA</button>
-        <div id="status" class="status">AGUARDANDO...</div>
+        <button onclick="verificarAcesso()">VERIFICAR CHAVE</button>
+        <div id="status" class="status">AGUARDANDO LOGIN...</div>
     </div>
 
     <script>
-        // CONFIGURAÇÕES DO SEU FIREBASE
-        // Pegue esses dados no Console do Firebase > Configurações do Projeto > Seus Apps > Web App (ícone </>)
+        // CONFIGURAÇÕES EXTRAÍDAS DO SEU JSON
         const firebaseConfig = {
-            apiKey: "SUA_API_KEY_AQUI",
-            databaseURL: "SUA_URL_DO_DATABASE_AQUI",
-            projectId: "SEU_PROJECT_ID",
-            storageBucket: "SEU_STORAGE_BUCKET",
-            messagingSenderId: "SEU_SENDER_ID",
-            appId: "SEU_APP_ID"
+            apiKey: "AIzaSyA0Q2b-zUJRT7VBrsKRdsln7UR9hLy_YKY",
+            authDomain: "alphagen-p9d3i.firebaseapp.com",
+            databaseURL: "https://alphagen-p9d3i-default-rtdb.firebaseio.com/",
+            projectId: "alphagen-p9d3i",
+            storageBucket: "alphagen-p9d3i.firebasestorage.app",
+            messagingSenderId: "391202812925",
+            appId: "1:391202812925:android:f4498042d3c1db3c99df94"
         };
 
         // Inicializa o Firebase
@@ -80,37 +83,37 @@
             const statusDiv = document.getElementById("status");
 
             if (keyDigitada === "") {
-                statusDiv.innerHTML = "ERRO: DIGITE ALGO";
+                statusDiv.innerHTML = "ERRO: CAMPO VAZIO";
                 return;
             }
 
-            statusDiv.innerHTML = "VERIFICANDO...";
+            statusDiv.innerHTML = "VALIDANDO NO BANCO...";
 
-            // Consulta o nó 'keys' no seu banco de dados
-            // Ele vai procurar por: keys/SUA_KEY
+            // Consulta no nó 'keys' do seu Realtime Database
             database.ref('keys/' + keyDigitada).once('value')
                 .then((snapshot) => {
                     if (snapshot.exists()) {
-                        statusDiv.innerHTML = "ACESSO PERMITIDO!";
+                        statusDiv.innerHTML = "KEY VÁLIDA! REDIRECIONANDO...";
                         
-                        // 1. Avisa o App Android (Sketchware) que o login deu certo
+                        // Avisa o Android (Sketchware) para mostrar o Toast
                         if (window.Android && window.Android.loginSucesso) {
                             window.Android.loginSucesso();
                         }
 
-                        // 2. Redireciona para a página do Painel (sucesso)
+                        // Redireciona para o seu painel de sucesso no GitHub
                         setTimeout(() => {
                             window.location.href = "sucesso.login.html";
-                        }, 1000);
+                        }, 1200);
                         
                     } else {
-                        statusDiv.innerHTML = "ERRO: KEY INVÁLIDA";
-                        alert("KEY NÃO ENCONTRADA NO SISTEMA!");
+                        statusDiv.innerHTML = "<span style='color:red;'>KEY INVÁLIDA</span>";
+                        alert("ESSA KEY NÃO EXISTE!");
                     }
                 })
                 .catch((error) => {
                     statusDiv.innerHTML = "ERRO DE CONEXÃO";
                     console.error(error);
+                    alert("Verifique a conexão ou as Regras do Database!");
                 });
         }
     </script>
