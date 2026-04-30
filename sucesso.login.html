@@ -3,60 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS DUMP - Painel</title>
+    <title>NEXUS DUMP - OFFSETS</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; overflow: hidden; }
-        body { background: #000; font-family: 'Courier New', Courier, monospace; height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; }
+        body { background: #000; font-family: 'Courier New', Courier, monospace; height: 100vh; display: flex; justify-content: center; align-items: center; }
 
-        /* --- Fundo Matrix (Mesmo do Login) --- */
+        /* Fundo Matrix */
         #matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
 
-        /* --- Painel de Hacks Estilo Neon --- */
         .painel-card {
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid #00ffff; /* Borda Ciano */
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #00ffff;
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px;
             width: 85%;
             max-width: 380px;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6); /* Brilho Ciano */
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
             z-index: 10;
         }
 
-        .title { color: #00ffff; font-size: 1.6em; letter-spacing: 3px; font-weight: bold; margin-bottom: 25px; text-align: center; text-shadow: 0 0 10px #00ffff; }
+        .title { color: #00ffff; font-size: 1.5em; text-align: center; text-shadow: 0 0 10px #00ffff; margin-bottom: 20px; font-weight: bold; }
 
-        /* --- Estilo das Categorias e Itens --- */
-        .category { color: #008000; font-size: 0.8em; text-transform: uppercase; margin-top: 15px; margin-bottom: 10px; border-bottom: 1px solid rgba(0, 128, 0, 0.3); padding-bottom: 5px; }
+        .category { color: #00ff00; font-size: 0.75em; margin: 15px 0 5px 0; border-bottom: 1px solid rgba(0, 255, 0, 0.2); padding-bottom: 3px; }
         
-        .hack-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(0, 255, 255, 0.1); }
-        .hack-name { color: #fff; font-size: 0.9em; letter-spacing: 1px; text-shadow: 0 0 5px rgba(255, 255, 255, 0.4); }
+        .hack-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(0, 255, 255, 0.05); }
+        .hack-name { color: #fff; font-size: 0.85em; letter-spacing: 1px; }
 
-        /* --- Estilo do Switch (Exatamente como o redondo da imagem) --- */
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        /* Switch Redondo Ciano */
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: #fff; transition: .4s; border-radius: 50%; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #00ffff; box-shadow: 0 0 10px #00ffff; }
-        input:checked + .slider:before { transform: translateX(20px); background-color: #fff; }
+        input:checked + .slider:before { transform: translateX(22px); }
 
-        /* --- Botão Neon Ciano "INICIAR JOGO" --- */
         .start-btn {
-            margin-top: 35px;
+            margin-top: 30px;
             width: 100%;
-            padding: 18px;
+            padding: 15px;
             background: #00ffff;
             color: #000;
             border: none;
-            border-radius: 12px;
-            font-size: 1.1em;
+            border-radius: 10px;
             font-weight: bold;
             text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
             cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
         }
-        .start-btn:hover { background: #00cccc; box-shadow: 0 0 25px rgba(0, 255, 255, 0.9); transform: scale(1.02); }
-
     </style>
 </head>
 <body>
@@ -70,7 +63,7 @@
         <div class="hack-item">
             <div class="hack-name">AimLock 100%</div>
             <label class="switch">
-                <input type="checkbox" id="aimlock" onchange="patcher('aimlock')">
+                <input type="checkbox" onchange="sendOffset('AimLock', '0x1234567', '0x0000C0BF', this.checked)">
                 <span class="slider"></span>
             </label>
         </div>
@@ -79,7 +72,7 @@
         <div class="hack-item">
             <div class="hack-name">Velocidade Correr</div>
             <label class="switch">
-                <input type="checkbox" id="velocidade" onchange="patcher('velocidade')">
+                <input type="checkbox" onchange="sendOffset('Speed', '0x2345678', '0x40A00000', this.checked)">
                 <span class="slider"></span>
             </label>
         </div>
@@ -88,56 +81,45 @@
         <div class="hack-item">
             <div class="hack-name">Antena Head</div>
             <label class="switch">
-                <input type="checkbox" id="antena" onchange="patcher('antena')">
+                <input type="checkbox" onchange="sendOffset('Antena', '0x3456789', '0x3F800000', this.checked)">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <button class="start-btn" onclick="iniciarJogo()">INICIAR FREE FIRE</button>
-        
+        <button class="start-btn" onclick="abrirFF()">INICIAR FREE FIRE</button>
     </div>
 
     <script>
-        // --- Animação do Fundo Matrix (Ciano) ---
+        // Matrix Animation
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.height = window.innerHeight; canvas.width = window.innerWidth;
-        const characters = "01"; // Usando apenas 0 e 1 como na imagem
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        const drops = []; for (let x = 0; x < columns; x++) drops[x] = 1;
-        function drawMatrix() {
+        const columns = canvas.width / 14;
+        const drops = Array(Math.floor(columns)).fill(1);
+        function draw() {
             ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(0, 255, 255, 0.3)"; // Ciano suave no fundo
-            ctx.font = fontSize + "px monospace";
-            for (let i = 0; i < drops.length; i++) {
-                const text = characters.charAt(Math.floor(Math.random() * characters.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            ctx.fillStyle = "#00ffff";
+            ctx.font = "14px monospace";
+            drops.forEach((y, i) => {
+                const text = Math.floor(Math.random() * 2);
+                ctx.fillText(text, i * 14, y * 14);
+                if (y * 14 > canvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
-            }
+            });
         }
-        setInterval(drawMatrix, 35);
+        setInterval(draw, 35);
 
-        // --- Comunicação com o App Android ---
-        function patcher(modName) {
-            const isChecked = document.getElementById(modName).checked;
-            console.log(`Mod ${modName}: ${isChecked}`);
-            // Avisa o App Android sobre a mudança (para logs, etc.)
+        // FUNÇÃO QUE ENVIA O OFFSET PARA O APP
+        function sendOffset(name, offset, hex, status) {
             if (window.Android && window.Android.applyPatch) {
-                window.Android.applyPatch(modName, "", "", isChecked);
+                // Envia para a ponte Java do Sketchware
+                window.Android.applyPatch(name, offset, hex, status);
             }
         }
 
-        function iniciarJogo() {
-            console.log("Iniciando Jogo...");
-            // Chama a função no App Android para abrir o Free Fire
-            if (window.Android && window.Android.abrirJogo) {
-                window.Android.abrirJogo();
-            } else {
-                alert("App Android não detectado. Isso deve rodar dentro do Mod!");
-            }
+        function abrirFF() {
+            if (window.Android) window.Android.abrirJogo();
         }
     </script>
 </body>
