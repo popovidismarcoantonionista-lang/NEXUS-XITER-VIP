@@ -3,44 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS DUMP VIP</title>
+    <title>NEXUS VIP</title>
+    
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: monospace; }
-        body { background: #000; height: 100vh; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; }
+        body { background: #000; height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        
+        /* Fundo Matrix */
         canvas { position: fixed; top: 0; left: 0; z-index: -1; }
-        .card { background: rgba(0, 0, 0, 0.9); border: 2px solid #00ffff; border-radius: 15px; padding: 25px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 0 20px #00ffff; z-index: 10; }
-        h2 { color: #00ffff; text-shadow: 0 0 10px #00ffff; margin-bottom: 20px; letter-spacing: 2px; }
-        input { width: 100%; padding: 12px; background: transparent; border: 1px solid #00ffff; color: #00ffff; border-radius: 5px; margin-bottom: 15px; text-align: center; outline: none; }
-        button { width: 100%; padding: 12px; background: #00ffff; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 10px #00ffff; }
-        .category { color: #00ff00; font-size: 11px; text-align: left; margin: 15px 0 5px; border-bottom: 1px solid rgba(0,255,0,0.2); }
-        .item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; color: #fff; font-size: 14px; }
-        .switch { position: relative; width: 40px; height: 20px; }
+
+        /* Painel Central */
+        .card {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ffff;
+            border-radius: 20px;
+            padding: 30px;
+            width: 85%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 0 25px #00ffff;
+            z-index: 10;
+        }
+
+        h2 { color: #00ffff; text-shadow: 0 0 10px #00ffff; margin-bottom: 20px; letter-spacing: 3px; }
+        
+        /* Input e Botões */
+        input { 
+            width: 100%; padding: 15px; background: transparent; 
+            border: 1px solid #00ffff; color: #00ffff; border-radius: 8px; 
+            margin-bottom: 20px; text-align: center; outline: none; 
+        }
+        
+        .main-btn { 
+            width: 100%; padding: 15px; background: #00ffff; color: #000; 
+            border: none; border-radius: 10px; font-weight: bold; 
+            cursor: pointer; text-transform: uppercase; box-shadow: 0 0 15px #00ffff;
+        }
+
+        /* Itens do Painel */
+        .category { color: #00ff00; font-size: 0.7em; text-align: left; margin-top: 15px; border-bottom: 1px solid rgba(0,255,0,0.3); padding-bottom: 5px; }
+        .hack-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(0,255,255,0.1); }
+        .hack-name { color: #fff; font-size: 0.9em; }
+
+        /* Switch Redondo Ciano */
+        .switch { position: relative; display: inline-block; width: 45px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #333; transition: .4s; border-radius: 20px; }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background: #fff; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background: #00ffff; }
-        input:checked + .slider:before { transform: translateX(20px); }
-        #panel { display: none; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 22px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #00ffff; box-shadow: 0 0 10px #00ffff; }
+        input:checked + .slider:before { transform: translateX(23px); }
+
+        #panel-screen { display: none; }
+        .status { color: #00ffff; font-size: 0.8em; margin-top: 15px; }
     </style>
 </head>
 <body>
+
     <canvas id="matrix"></canvas>
-    <div id="login" class="card">
+
+    <div id="login-screen" class="card">
         <h2>NEXUS LOGIN</h2>
-        <input type="text" id="key" placeholder="SUA KEY AQUI">
-        <button onclick="logar()">ENTRAR</button>
+        <input type="text" id="key-input" placeholder="COLE SUA KEY AQUI">
+        <button class="main-btn" onclick="verificarKey()">LOGAR NO MOD</button>
+        <div id="status-msg" class="status"></div>
     </div>
-    <div id="panel" class="card">
+
+    <div id="panel-screen" class="card">
         <h2>NEXUS DUMP</h2>
+        
         <div class="category">COMBATE</div>
-        <div class="item"><span>AimLock 100%</span><label class="switch"><input type="checkbox" onchange="patch('AimLock','0x123','0xABC',this.checked)"><span class="slider"></span></label></div>
+        <div class="hack-item">
+            <span class="hack-name">AimLock 100%</span>
+            <label class="switch">
+                <input type="checkbox" onchange="sendToAndroid('AimLock', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+
         <div class="category">MOVIMENTAÇÃO</div>
-        <div class="item"><span>Velocidade</span><label class="switch"><input type="checkbox" onchange="patch('Speed','0x456','0xDEF',this.checked)"><span class="slider"></span></label></div>
-        <button style="margin-top:20px" onclick="if(window.Android) window.Android.abrirJogo()">INICIAR JOGO</button>
+        <div class="hack-item">
+            <span class="hack-name">Velocidade Correr</span>
+            <label class="switch">
+                <input type="checkbox" onchange="sendToAndroid('Speed', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="category">VISUAL</div>
+        <div class="hack-item">
+            <span class="hack-name">Antena Head</span>
+            <label class="switch">
+                <input type="checkbox" onchange="sendToAndroid('Antena', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <button class="main-btn" style="margin-top: 25px;" onclick="if(window.Android) window.Android.abrirJogo()">INICIAR FREE FIRE</button>
     </div>
+
     <script>
+        // Configuração Firebase corrigida
         const firebaseConfig = {
             apiKey: "AIzaSyA0Q2b-zUJRT7VBrsKRdsln7UR9hLy_YKY",
             databaseURL: "https://alphagen-p9d3i-default-rtdb.firebaseio.com",
@@ -48,24 +113,49 @@
             appId: "1:391202812925:android:f4498042d3c1db3c99df94"
         };
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        function logar() {
-            const k = document.getElementById('key').value;
-            db.ref('keys/'+k).once('value').then(s => {
-                if(s.exists()){ document.getElementById('login').style.display='none'; document.getElementById('panel').style.display='block'; }
-                else { alert("KEY INVÁLIDA!"); }
+        const database = firebase.database();
+
+        function verificarKey() {
+            const key = document.getElementById('key-input').value;
+            const status = document.getElementById('status-msg');
+            
+            if(!key) return alert("DIGITE A KEY!");
+            status.innerHTML = "VERIFICANDO...";
+
+            database.ref('keys/' + key).once('value').then((snapshot) => {
+                if (snapshot.exists()) {
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('panel-screen').style.display = 'block';
+                    if(window.Android) window.Android.loginSucesso();
+                } else {
+                    status.innerHTML = "KEY INVÁLIDA!";
+                }
+            }).catch((e) => {
+                status.innerHTML = "ERRO DE CONEXÃO!";
+                console.error(e);
             });
         }
-        function patch(n,o,h,s) { if(window.Android) window.Android.applyPatch(n,o,h,s); }
-        const c=document.getElementById("matrix"), x=c.getContext("2d");
-        c.height=window.innerHeight; c.width=window.innerWidth;
-        const drops=Array(Math.floor(c.width/14)).fill(1);
+
+        function sendToAndroid(nome, estado) {
+            if(window.Android) {
+                // Envia para o Sketchware mostrar o Toast ON/OFF
+                window.Android.applyPatch(nome, "0x0", "0x0", estado);
+            }
+        }
+
+        // Efeito Matrix Ciano
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.height = window.innerHeight; canvas.width = window.innerWidth;
+        const drops = Array(Math.floor(canvas.width/14)).fill(1);
         function draw() {
-            x.fillStyle="rgba(0,0,0,0.05)"; x.fillRect(0,0,c.width,c.height);
-            x.fillStyle="#00ffff"; x.font="14px monospace";
-            drops.forEach((y,i)=>{
-                x.fillText(Math.floor(Math.random()*2),i*14,y*14);
-                if(y*14>c.height&&Math.random()>0.975) drops[i]=0;
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#00ffff";
+            ctx.font = "14px monospace";
+            drops.forEach((y, i) => {
+                ctx.fillText(Math.floor(Math.random()*2), i*14, y*14);
+                if(y*14 > canvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             });
         }
