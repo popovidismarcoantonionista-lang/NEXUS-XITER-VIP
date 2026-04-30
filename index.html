@@ -1,62 +1,134 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS VIP V2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS VIP LOGIN</title>
     <style>
-        :root { --neon: #00ff41; --blue: #00f7ff; --bg: rgba(0, 0, 0, 0.95); }
-        canvas#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; }
-        body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: sans-serif; color: var(--neon); overflow: hidden; }
-        .panel { width: 85%; max-width: 320px; background: var(--bg); border-radius: 15px; padding: 25px; text-align: center; border: 1px solid var(--neon); box-shadow: 0 0 15px rgba(0,255,65,0.2); }
-        #mod-ui { display: none; border-color: var(--blue); }
-        .title { font-size: 24px; font-weight: 900; margin-bottom: 20px; text-shadow: 0 0 10px var(--neon); }
-        .in { width: 100%; background: #111; border: 1px solid var(--neon); padding: 12px; color: #fff; margin-bottom: 15px; border-radius: 5px; text-align: center; box-sizing: border-box; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .btn-g { background: var(--neon); color: #000; }
-        .btn-b { background: var(--blue); color: #000; margin-top: 20px; }
-        .item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(255,255,255,0.05); margin-bottom: 5px; border-radius: 5px; }
-        .switch { position: relative; width: 40px; height: 20px; }
-        .switch input { opacity: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #333; border-radius: 20px; transition: .4s; }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background: #fff; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background: var(--blue); }
-        input:checked + .slider:before { transform: translateX(20px); }
+        /* Efeito Matrix */
+        body { 
+            background-color: black; 
+            margin: 0; 
+            overflow: hidden; 
+            font-family: 'Courier New', Courier, monospace; 
+        }
+        canvas { 
+            display: block; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+        }
+
+        /* Painel de Login */
+        .login-box {
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            background: rgba(0, 15, 0, 0.9); 
+            padding: 30px; 
+            border: 2px solid #00FF00;
+            text-align: center; 
+            color: #00FF00; 
+            box-shadow: 0 0 20px #00FF00; 
+            z-index: 10;
+            border-radius: 15px;
+            width: 280px;
+        }
+
+        h2 { 
+            margin-bottom: 20px; 
+            letter-spacing: 2px; 
+            text-shadow: 0 0 10px #00FF00; 
+        }
+
+        input { 
+            background: black; 
+            border: 1px solid #00FF00; 
+            color: #00FF00; 
+            padding: 12px; 
+            margin-top: 10px; 
+            width: 90%; 
+            text-align: center;
+            outline: none;
+            font-weight: bold;
+        }
+
+        button {
+            background: #00FF00; 
+            color: black; 
+            border: none; 
+            padding: 12px;
+            margin-top: 25px; 
+            cursor: pointer; 
+            font-weight: bold;
+            width: 100%;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        button:hover { 
+            background: #008800; 
+            color: white; 
+            box-shadow: 0 0 15px #00FF00;
+        }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
 
-    <div id="auth-ui" class="panel">
-        <div class="title">NEXUS AUTH</div>
-        <input type="text" id="keyField" class="in" placeholder="DIGITE A KEY">
-        <button class="btn btn-g" onclick="validar()">ENTRAR</button>
-    </div>
-
-    <div id="mod-ui" class="panel">
-        <div class="title" style="color:var(--blue)">DUMP MENU</div>
-        <div class="item"><span>AimLock</span><label class="switch"><input type="checkbox" onclick="patch('Aim', '0x336371c', '0000A0E3', this.checked)"><span class="slider"></span></label></div>
-        <div class="item"><span>Speed</span><label class="switch"><input type="checkbox" onclick="patch('Speed', '0x68a10dc', '0000A0E3', this.checked)"><span class="slider"></span></label></div>
-        <button class="btn btn-b" onclick="abrir()">ABRIR FREE FIRE</button>
+    <div class="login-box">
+        <h2>NEXUS XITER VIP</h2>
+        <p style="font-size: 0.8rem;">SISTEMA DE AUTENTICAÇÃO</p>
+        <input type="text" id="keyInput" placeholder="COLE SUA KEY">
+        <br>
+        <button onclick="checkKey()">LOGAR NO MOD</button>
     </div>
 
     <script>
-        // Matrix
-        const c=document.getElementById('matrix'), x=c.getContext('2d');
-        c.height=window.innerHeight; c.width=window.innerWidth;
-        const d=Array(Math.floor(c.width/14)).fill(1);
-        function draw(){ x.fillStyle='rgba(0,0,0,0.05)'; x.fillRect(0,0,c.width,c.height); x.fillStyle='#0f0'; d.forEach((y,i)=>{ x.fillText(Math.floor(Math.random()*2),i*14,y*14); if(y*14>c.height&&Math.random()>0.975)d[i]=0; d[i]++; }); }
-        setInterval(draw,50);
+        // Configuração do Efeito Matrix
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-        function validar() {
-            const k = document.getElementById('keyField').value.trim().toUpperCase();
-            if(k === "NEXUS") {
-                document.getElementById('auth-ui').style.display = 'none';
-                document.getElementById('mod-ui').style.display = 'block';
-            } else { alert("KEY INVÁLIDA!"); }
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px arial';
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
         }
-        function patch(n, o, h, s) { if(typeof Android !== 'undefined') Android.applyPatch(n, o, h, s); }
-        function abrir() { if(typeof Android !== 'undefined') Android.abrirJogo(); }
+        setInterval(draw, 35);
+
+        // Função de Verificação de Key
+        function checkKey() {
+            const key = document.getElementById('keyInput').value.trim();
+            
+            // KEY DEFINIDA
+            if (key === "NEXUS-2026-VIP") {
+                // Redireciona para o arquivo de sucesso que o App está vigiando
+                window.location.href = "sucesso.login.html";
+            } else {
+                alert("KEY INVÁLIDA! ENTRE EM CONTATO COM O SUPORTE.");
+            }
+        }
+
+        // Ajustar tamanho do canvas se a tela girar
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
     </script>
 </body>
 </html>
