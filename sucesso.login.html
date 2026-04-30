@@ -36,7 +36,12 @@
             z-index: 10;
             border-radius: 15px;
             width: 300px;
+            max-height: 90vh;
+            overflow-y: auto;
         }
+
+        /* Esconder scrollbar para manter estética */
+        .mod-box::-webkit-scrollbar { width: 0px; }
 
         h2 { 
             color: var(--neon-blue);
@@ -111,21 +116,49 @@
                 <span class="slider"></span>
             </label>
         </div>
-
-        <div class="category">Movimentação</div>
         <div class="option">
-            <span class="option-name">Velocidade Correr</span>
+            <span class="option-name">No Recoil</span>
             <label class="switch">
-                <input type="checkbox" onclick="sendPatch('Speed', '0x68a10dc', '0000A0E3', this.checked)">
+                <input type="checkbox" onclick="sendPatch('No Recoil', '0x68a10dc', '0000A0E3', this.checked)">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <div class="category">Visual</div>
+        <div class="category">Movimentação</div>
+        <div class="option">
+            <span class="option-name">SkyDive Max Speed</span>
+            <label class="switch">
+                <input type="checkbox" onclick="sendPatch('SkyDive Speed', '0x6ef16e8', '0000A0E3', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="option">
+            <span class="option-name">Fly Altura Min</span>
+            <label class="switch">
+                <input type="checkbox" onclick="sendPatch('Fly Min', '0x5ff59f4', '0000A0E3', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="category">Visual & Sistema</div>
+        <div class="option">
+            <span class="option-name">Wallhack Render</span>
+            <label class="switch">
+                <input type="checkbox" onclick="sendPatch('Wallhack', '0x3360e0c', '0000A0E3', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
         <div class="option">
             <span class="option-name">Antena Head</span>
             <label class="switch">
                 <input type="checkbox" onclick="sendPatch('Antena', '0x3357530', '0000A0E3', this.checked)">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="option">
+            <span class="option-name">FPS Unlock</span>
+            <label class="switch">
+                <input type="checkbox" onclick="sendPatch('FPS Unlock', '0x7f826c8', '0000A0E3', this.checked)">
                 <span class="slider"></span>
             </label>
         </div>
@@ -173,4 +206,3 @@
     </script>
 </body>
 </html>
-
