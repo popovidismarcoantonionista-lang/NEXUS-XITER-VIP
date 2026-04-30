@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>NEXUS XITER KEY🔐</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <style>
+        body { background: #000; color: #00f7ff; font-family: monospace; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .panel { border: 2px solid #00f7ff; padding: 25px; border-radius: 15px; background: rgba(0,10,0,0.9); width: 320px; text-align: center; box-shadow: 0 0 20px #00f7ff; }
+        .key-out { background: #111; padding: 15px; border: 1px dashed #0f0; margin: 20px 0; color: #fff; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { background: #00f7ff; color: #000; border: none; padding: 10px; cursor: pointer; font-weight: bold; border-radius: 4px; }
+        button.life { grid-column: span 2; background: #0f0; }
+    </style>
+</head>
+<body>
+    <div class="panel">
+        <h2>NEXUS GEN</h2>
+        <div class="key-out" id="res">GERAR LICENÇA</div>
+        <div class="grid">
+            <button onclick="gen(1)">1 DIA</button>
+            <button onclick="gen(3)">3 DIAS</button>
+            <button onclick="gen(7)">7 DIAS</button>
+            <button onclick="gen(30)">30 DIAS</button>
+            <button class="life" onclick="gen(9999)">LIFETIME</button>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0Q2b-zUJRT7VBrsKRdsln7UR9hLy_YKY",
+            databaseURL: "https://console.firebase.google.com/u/0/project/alphagen-p9d3i/database/alphagen-p9d3i-default-rtdb/data/~2F"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        function gen(dias) {
+            const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const label = dias > 1000 ? "PERM" : dias + "D";
+            const fullKey = `NEXUS-${label}-${code}`;
+            const expira = dias > 1000 ? 4102444800000 : Date.now() + (dias * 24 * 60 * 60 * 1000);
+
+            database.ref('keys/' + fullKey).set({
+                status: "ativa",
+                expira: expira
+            }).then(() => {
+                document.getElementById('res').innerText = fullKey;
+                alert("Key Salva");
+            });
+        }
+    </script>
+</body>
+</html>
